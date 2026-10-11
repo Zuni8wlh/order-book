@@ -54,6 +54,8 @@ button.primary:hover{filter:brightness(.96)}
 button.danger{color:var(--crit)}
 button.small{padding:5px 12px;font-size:13px}
 button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pills .cnt{opacity:.6;margin-left:2px}
 :focus-visible{outline:2px solid var(--c2);outline-offset:2px}
 
 .section{display:flex;flex-direction:column;gap:18px}
@@ -177,7 +179,7 @@ input,select,textarea{font:14.5px var(--body);color:var(--ink);background:#F4F4F
   </aside>
   <div class="content">
     <header class="top">
-      <div class="brand"><h1 id="page-title">Selamat datang</h1><span class="muted" id="sub">Ini kondisi order, uang masuk, dan stok kamu.</span></div>
+      <div class="brand"><h1 id="page-title">Selamat datang</h1><span class="muted" id="sub">Order, uang masuk, dan stok.</span></div>
       <button class="primary" data-act="new-order" id="btn-new-order">+ Order baru</button>
     </header>
     <main id="view" class="section"><div class="card"><div class="empty">Memuat data…</div></div></main>
@@ -287,7 +289,7 @@ const strip = row => { const o = Object.assign({}, row); delete o.id; return o; 
 function render(){
   document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tab));
   $('page-title').textContent = { ringkasan: 'Selamat datang', order: 'Invoice & order status', stok: 'Stok & harga', customer: 'Customer' }[tab];
-  $('sub').textContent = { ringkasan: 'Ini kondisi order, uang masuk, dan stok kamu.', order: 'Status pembayaran, riwayat bayar, dan invoice tiap order.', stok: 'Sisa stok per kg, harga jual, dan riwayat keluar masuk.', customer: 'Daftar customer dan sisa tagihannya.' }[tab];
+  $('sub').textContent = { ringkasan: 'Order, uang masuk, dan stok.', order: 'Status pembayaran, riwayat bayar, dan invoice tiap order.', stok: 'Sisa stok per kg, harga jual, dan riwayat keluar masuk.', customer: 'Daftar customer dan sisa tagihannya.' }[tab];
   if (!ready) return;
 
   const C = calc(S, today());
@@ -323,9 +325,10 @@ function payHistory(o){
   const kurang = batal ? 0 : Math.max(o.sisa, 0);
   return '<div class="hist"><span class="label">Riwayat pembayaran</span>' + list + add + '<span class="tot">Sudah dibayar <strong class="num">' + rp(o.dibayar) + '</strong> · Kurang <strong class="num" style="color:var(' + (kurang > 0 ? '--crit' : '--good') + ')">' + rp(kurang) + '</strong></span></div>';
 }
+const openHist = new Set();
 function orderRows(list){
-  return list.map(o => { const b = o.status === 'batal' ? ' batal' : ''; return '<tr class="click main' + b + '" data-act="open-order" data-id="' + o.id + '" tabindex="0"><td style="white-space:nowrap"><span class="num">' + esc(o.no) + '</span><br><button class="small primary" style="margin-top:6px" data-act="open-order" data-id="' + o.id + '">Buka invoice</button></td><td>' + esc(o.customerName) + '<br><span class="muted">' + o.items.map(i => esc(i.nama) + ' ' + kg(i.qty)).join(', ') + '</span></td><td>' + tgl(o.tanggal) + '<br><span class="muted">tempo ' + tgl(o.jatuhTempo) + '</span>' + (o.telat ? '<br><span style="color:var(--crit)">lewat jatuh tempo</span>' : '') + '</td><td class="r num">' + rp(o.total) + '</td><td class="r">' + (b ? '<span class="num">' + rp(o.dibayar) + '</span>' : '<input class="num amt" id="t-paid-' + o.id + '" data-paid="' + o.id + '" type="number" min="0" step="1" inputmode="numeric" value="' + o.dibayar + '" aria-label="Sudah dibayar">') + '</td><td class="r num">' + rp(o.status === 'batal' ? 0 : Math.max(o.sisa, 0)) + '</td><td>' + statusSelect(o, 't') + '</td><td>' + noteInput(o, 't') + '</td></tr>' +
-    '<tr class="sub' + b + '"><td colspan="8">' + payHistory(o) + '</td></tr>'; }).join('');
+  return list.map(o => { const b = o.status === 'batal' ? ' batal' : ''; const op = openHist.has(o.id); return '<tr class="click' + (op ? ' main' : '') + b + '" data-act="open-order" data-id="' + o.id + '" tabindex="0"><td style="white-space:nowrap"><span class="num">' + esc(o.no) + '</span><br><button class="small primary" style="margin-top:6px" data-act="open-order" data-id="' + o.id + '">Buka invoice</button> <button class="small tgl" style="margin-top:6px;padding:5px 9px" data-act="toggle-hist" data-id="' + o.id + '" aria-expanded="' + op + '" aria-label="' + (op ? 'Tutup' : 'Buka') + ' riwayat bayar" title="Riwayat bayar">' + (op ? '▴' : '▾') + '</button></td><td>' + esc(o.customerName) + '<br><span class="muted">' + o.items.map(i => esc(i.nama) + ' ' + kg(i.qty)).join(', ') + '</span></td><td>' + tgl(o.tanggal) + '<br><span class="muted">tempo ' + tgl(o.jatuhTempo) + '</span>' + (o.telat ? '<br><span style="color:var(--crit)">lewat jatuh tempo</span>' : '') + '</td><td class="r num">' + rp(o.total) + '</td><td class="r">' + (b ? '<span class="num">' + rp(o.dibayar) + '</span>' : '<input class="num amt" id="t-paid-' + o.id + '" data-paid="' + o.id + '" type="number" min="0" step="1" inputmode="numeric" value="' + o.dibayar + '" aria-label="Sudah dibayar">') + '</td><td class="r num">' + rp(o.status === 'batal' ? 0 : Math.max(o.sisa, 0)) + '</td><td>' + statusSelect(o, 't') + '</td><td>' + noteInput(o, 't') + '</td></tr>' +
+    (op ? '<tr class="sub' + b + '"><td colspan="8">' + payHistory(o) + '</td></tr>' : ''); }).join('');
 }
 const orderHead = '<tr><th>No. invoice</th><th>Customer / barang</th><th>Tanggal order</th><th class="r">Total</th><th class="r">Sudah dibayar</th><th class="r">Kurang</th><th>Status pembayaran</th><th>Note</th></tr>';
 
@@ -422,9 +425,15 @@ document.addEventListener('pointermove', ev => {
   const left = px / d.W * r.width;
   if (left > r.width / 2){ tip.style.left = ''; tip.style.right = (r.width - left + 12) + 'px'; } else { tip.style.right = ''; tip.style.left = (left + 12) + 'px'; }
 });
+let oFilter = 'semua';
 function vOrder(C){
-  return '<div class="row"><h2>Semua order</h2><span class="muted">' + C.orders.length + ' order</span></div>' +
-    (C.orders.length ? '<div class="tablebox"><table>' + orderHead + orderRows(C.orders) + '</table></div>' : '<div class="tablebox"><div class="empty">Belum ada order.<button class="primary" data-act="new-order">+ Order baru</button></div></div>');
+  const opts = [['semua', 'Semua'], ['belum', 'Belum bayar'], ['dp', 'DP'], ['lunas', 'Lunas'], ['batal', 'Batal']];
+  const n = k => k === 'semua' ? C.orders.length : C.orders.filter(o => o.status === k).length;
+  const list = oFilter === 'semua' ? C.orders : C.orders.filter(o => o.status === oFilter);
+  const pills = '<div class="pills" role="group" aria-label="Saring menurut status">' + opts.map(o => '<button class="small' + (oFilter === o[0] ? ' on' : '') + '" data-act="ofilter" data-f="' + o[0] + '" aria-pressed="' + (oFilter === o[0]) + '">' + o[1] + ' <span class="cnt">' + n(o[0]) + '</span></button>').join('') + '</div>';
+  return '<div class="row"><div class="row" style="justify-content:flex-start;gap:12px 18px"><h2>Semua order</h2>' + pills + '</div><span class="muted">' + list.length + ' order</span></div>' +
+    (list.length ? '<div class="tablebox"><table>' + orderHead + orderRows(list) + '</table></div>' :
+      '<div class="tablebox"><div class="empty">' + (C.orders.length ? 'Tidak ada order dengan status ini.' : 'Belum ada order.<button class="primary" data-act="new-order">+ Order baru</button>') + '</div></div>');
 }
 function vStok(C){
   const mut = S.stockin.map(s => ({ t: s.tanggal, p: s.productId, q: s.qty, k: s.catatan || 'Barang masuk', id: s.id, s: 0, c: Date.parse(s.created_at || s.tanggal) || 0 }))
@@ -637,11 +646,13 @@ document.addEventListener('click', async ev => {
   if (tb){ tab = tb.dataset.tab; try { history.replaceState(null, '', '#' + tab); } catch (e) {} return render(); }
   const el = ev.target.closest('[data-act]'); if (!el) return;
   const act = el.dataset.act, id = el.dataset.id;
-  if (act === 'open-order' && ev.target.closest('select,input')) return;
+  if (act === 'open-order' && el.tagName === 'TR' && ev.target.closest('select,input,button')) return;
   if (el.dataset.confirm && armed !== el){ armed = el; el.dataset.label = el.textContent; el.textContent = el.dataset.confirm; setTimeout(() => { if (armed === el){ armed = null; if (el.isConnected) el.textContent = el.dataset.label; } }, 4000); return; }
   armed = null;
   try {
     if (act === 'close') closeDlg();
+    else if (act === 'ofilter') { oFilter = el.dataset.f; render(); }
+    else if (act === 'toggle-hist') { if (openHist.has(id)) openHist.delete(id); else openHist.add(id); render(); }
     else if (act === 'add-pay') {
       const o = findOrder(id), q = k => document.querySelector('#view [data-' + k + '="' + id + '"]');
       let amt = Math.round(parseFloat(q('newamt').value) || 0);
