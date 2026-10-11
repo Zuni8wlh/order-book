@@ -91,6 +91,7 @@ tr.sub td{padding-top:0}
 .hist{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;background:var(--bg);border-radius:6px;padding:8px 12px}
 .pay{display:inline-flex;gap:8px;align-items:center;font-size:13.5px}
 .tot{font-size:13.5px;border-left:1px solid var(--line);padding-left:18px}
+input.amt{width:128px;text-align:right;font-size:13.5px;padding:5px 8px}
 input.paydate{width:auto;font-size:13px;padding:5px 8px}
 .periode{display:flex;flex-wrap:wrap;gap:8px;align-items:end}
 .periode label.f{width:150px}
@@ -173,7 +174,7 @@ function calc(S, today){
     const total = o.items.reduce((a, i) => a + lineTotal(i), 0);
     const dibayar = paid[o.id] || 0, sisa = total - dibayar;
     const auto = sisa <= 0 ? 'lunas' : (dibayar > 0 ? 'dp' : 'belum');
-    const status = (o.status === 'cicilan' ? 'dp' : o.status) || auto;
+    const status = o.status === 'batal' ? 'batal' : auto;
     const telat = status !== 'batal' && status !== 'lunas' && sisa > 0 && !!o.jatuhTempo && o.jatuhTempo < today;
     return Object.assign({}, o, { total, dibayar, sisa, status, telat });
   }).sort((a, b) => b.tanggal.localeCompare(a.tanggal) || (b.createdAt || 0) - (a.createdAt || 0));
@@ -260,7 +261,7 @@ function render(){
   const v = $('view');
   if (!S.products.length){
     v.innerHTML = '<div class="tablebox"><div class="empty"><h2>Belum ada produk</h2><span>Mulai dari produk dan stok awalnya. Setelah itu setiap order otomatis memotong stok dan membuat invoice.</span><button class="primary" data-act="new-product">+ Tambah produk</button></div></div>';
-  } else if (typing('#view input.note')) pending = true;
+  } else if (typing('#view input.note, #view input.amt')) pending = true;
   else v.innerHTML = ({ ringkasan: vRingkasan, order: vOrder, stok: vStok, customer: vCustomer })[tab](C);
   if (openOrder && $('dlg').open){ const o = C.orders.find(x => x.id === openOrder); if (!o) closeDlg(); else if (typing('#dlg input.note')) pending = true; else $('dlg-body').innerHTML = orderDetail(o); }
 }
@@ -282,12 +283,15 @@ function noteInput(o, pre){ return '<input id="' + pre + '-note-' + o.id + '" cl
 const jn = j => j === 'Cicilan' ? 'DP' : (j || '');
 function payHistory(o){
   const ps = S.payments.filter(p => p.orderId === o.id).sort((a, b) => a.tanggal.localeCompare(b.tanggal));
-  const list = ps.length ? ps.map(p => '<span class="pay"><input type="date" class="paydate" id="t-pd-' + p.id + '" data-paydate="' + p.id + '" value="' + esc(p.tanggal) + '" aria-label="Tanggal bayar"><span>' + esc(jn(p.jenis)) + '</span><strong class="num">' + rp(p.jumlah) + '</strong></span>').join('') : '<span class="muted">Belum ada pembayaran</span>';
-  const kurang = o.status === 'batal' ? 0 : Math.max(o.sisa, 0);
-  return '<div class="hist"><span class="label">Riwayat pembayaran</span>' + list + '<span class="tot">Sudah dibayar <strong class="num">' + rp(o.dibayar) + '</strong> · Kurang <strong class="num" style="color:var(' + (kurang > 0 ? '--crit' : '--good') + ')">' + rp(kurang) + '</strong></span></div>';
+  const batal = o.status === 'batal';
+  let run = 0;
+  const list = ps.map(p => { run += p.jumlah; return '<span class="pay"><input type="date" class="paydate" id="t-pd-' + p.id + '" data-paydate="' + p.id + '" value="' + esc(p.tanggal) + '" aria-label="Tanggal bayar"><span>' + (run >= o.total ? 'Pelunasan' : 'DP') + '</span><input class="num amt" type="number" min="0" step="1" inputmode="numeric" id="t-pa-' + p.id + '" data-payamt="' + p.id + '" value="' + p.jumlah + '" aria-label="Nominal pembayaran"><button class="small danger" data-act="del-pay" data-id="' + p.id + '" data-confirm="Hapus?" aria-label="Hapus pembayaran">×</button></span>'; }).join('') || '<span class="muted">Belum ada pembayaran</span>';
+  const add = (!batal && o.sisa > 0) ? '<span class="pay"><input type="date" class="paydate" id="t-nd-' + o.id + '" data-newdate="' + o.id + '" value="' + today() + '" aria-label="Tanggal pembayaran baru"><input class="num amt" type="number" min="1" step="1" inputmode="numeric" id="t-na-' + o.id + '" data-newamt="' + o.id + '" placeholder="Nominal" aria-label="Nominal pembayaran baru"><button class="small" data-act="add-pay" data-id="' + o.id + '">+ Tambah pembayaran</button></span>' : '';
+  const kurang = batal ? 0 : Math.max(o.sisa, 0);
+  return '<div class="hist"><span class="label">Riwayat pembayaran</span>' + list + add + '<span class="tot">Sudah dibayar <strong class="num">' + rp(o.dibayar) + '</strong> · Kurang <strong class="num" style="color:var(' + (kurang > 0 ? '--crit' : '--good') + ')">' + rp(kurang) + '</strong></span></div>';
 }
 function orderRows(list){
-  return list.map(o => { const b = o.status === 'batal' ? ' batal' : ''; return '<tr class="click main' + b + '" data-act="open-order" data-id="' + o.id + '" tabindex="0"><td style="white-space:nowrap"><span class="num">' + esc(o.no) + '</span><br><button class="small primary" style="margin-top:6px" data-act="open-order" data-id="' + o.id + '">Buka invoice</button></td><td>' + esc(o.customerName) + '<br><span class="muted">' + o.items.map(i => esc(i.nama) + ' ' + kg(i.qty)).join(', ') + '</span></td><td>' + tgl(o.tanggal) + '<br><span class="muted">tempo ' + tgl(o.jatuhTempo) + '</span>' + (o.telat ? '<br><span style="color:var(--crit)">lewat jatuh tempo</span>' : '') + '</td><td class="r num">' + rp(o.total) + '</td><td class="r num">' + rp(o.dibayar) + '</td><td class="r num">' + rp(o.status === 'batal' ? 0 : Math.max(o.sisa, 0)) + '</td><td>' + statusSelect(o, 't') + '</td><td>' + noteInput(o, 't') + '</td></tr>' +
+  return list.map(o => { const b = o.status === 'batal' ? ' batal' : ''; return '<tr class="click main' + b + '" data-act="open-order" data-id="' + o.id + '" tabindex="0"><td style="white-space:nowrap"><span class="num">' + esc(o.no) + '</span><br><button class="small primary" style="margin-top:6px" data-act="open-order" data-id="' + o.id + '">Buka invoice</button></td><td>' + esc(o.customerName) + '<br><span class="muted">' + o.items.map(i => esc(i.nama) + ' ' + kg(i.qty)).join(', ') + '</span></td><td>' + tgl(o.tanggal) + '<br><span class="muted">tempo ' + tgl(o.jatuhTempo) + '</span>' + (o.telat ? '<br><span style="color:var(--crit)">lewat jatuh tempo</span>' : '') + '</td><td class="r num">' + rp(o.total) + '</td><td class="r">' + (b ? '<span class="num">' + rp(o.dibayar) + '</span>' : '<input class="num amt" id="t-paid-' + o.id + '" data-paid="' + o.id + '" type="number" min="0" step="1" inputmode="numeric" value="' + o.dibayar + '" aria-label="Sudah dibayar">') + '</td><td class="r num">' + rp(o.status === 'batal' ? 0 : Math.max(o.sisa, 0)) + '</td><td>' + statusSelect(o, 't') + '</td><td>' + noteInput(o, 't') + '</td></tr>' +
     '<tr class="sub' + b + '"><td colspan="8">' + payHistory(o) + '</td></tr>'; }).join('');
 }
 const orderHead = '<tr><th>No. invoice</th><th>Customer / barang</th><th>Tanggal order</th><th class="r">Total</th><th class="r">Sudah dibayar</th><th class="r">Kurang</th><th>Status pembayaran</th><th>Note</th></tr>';
@@ -447,17 +451,56 @@ async function clearStatus(orderId){
   if (!raw || !raw.status || raw.status === 'batal') return;
   await put('orders', { status: null }, orderId);
 }
+const findOrder = id => calc(S, today()).orders.find(x => x.id === id);
 async function setStatus(id, val){
-  const o = calc(S, today()).orders.find(x => x.id === id), raw = S.orders.find(x => x.id === id);
+  let o = findOrder(id); const raw = S.orders.find(x => x.id === id);
   if (!o || !raw) return;
-  if (val === 'lunas' && o.sisa > 0){
-    await put('payments', { orderId: id, tanggal: today(), jumlah: o.sisa, jenis: 'Pelunasan', metode: 'Transfer' });
-    await put('orders', { status: null }, id);
-    toast('Lunas. Sisa ' + rp(o.sisa) + ' dicatat sebagai pelunasan.');
-  } else {
-    await put('orders', { status: val }, id);
-    toast(val === 'batal' ? 'Order dibatalkan. Stok dikembalikan.' : 'Status diubah ke ' + STATUS[val] + '.');
+  if (val === 'batal'){ await put('orders', { status: 'batal' }, id); return toast('Order dibatalkan. Stok dikembalikan.'); }
+  if (raw.status){ await put('orders', { status: null }, id); o = findOrder(id); }
+  const ps = S.payments.filter(p => p.orderId === id);
+  if (val === 'lunas'){
+    if (o.sisa > 0){ await put('payments', { orderId: id, tanggal: today(), jumlah: o.sisa, jenis: 'Pelunasan', metode: 'Transfer' }); toast('Lunas. Sisa ' + rp(o.sisa) + ' dicatat sebagai pembayaran hari ini.'); }
+  } else if (val === 'dp'){
+    if (o.dibayar <= 0){
+      toast('Isi nominal DP yang sudah diterima.'); render();
+      const el = $('dlg').open ? $('p-jml') : document.querySelector('#view [data-paid="' + id + '"]');
+      if (el){ el.focus(); if (el.select) el.select(); }
+      return;
+    }
+    if (o.sisa <= 0){
+      const auto = ps.filter(p => p.jenis === 'Pelunasan');
+      if (auto.length && auto.length < ps.length){ for (const p of auto) await del('payments', p.id); toast('Pelunasan dihapus, tersisa pembayaran DP.'); }
+      else toast('Pembayaran tercatat masih sama dengan total. Ubah nominalnya di kolom Sudah dibayar.');
+    }
+  } else if (val === 'belum' && ps.length) toast('Masih ada pembayaran tercatat. Isi 0 di kolom Sudah dibayar kalau memang belum bayar.');
+  render();
+}
+/* Nominal: kolom "Sudah dibayar" = jumlah semua baris di Riwayat pembayaran. Status mengikuti angka ini. */
+async function setPaid(id, x){
+  const o = findOrder(id); if (!o) return;
+  x = Math.max(0, Math.round(x || 0));
+  if (x > o.total) x = o.total;
+  const diff = x - o.dibayar;
+  if (diff > 0) await put('payments', { orderId: id, tanggal: today(), jumlah: diff, jenis: x >= o.total ? 'Pelunasan' : 'DP', metode: 'Transfer' });
+  else if (diff < 0){
+    let c = -diff;
+    for (const p of S.payments.filter(p => p.orderId === id).sort((a, b) => b.tanggal.localeCompare(a.tanggal))){
+      if (c <= 0) break;
+      if (p.jumlah <= c){ c -= p.jumlah; await del('payments', p.id); }
+      else { await put('payments', { jumlah: p.jumlah - c, jenis: 'DP' }, p.id); c = 0; }
+    }
   }
+  toast('Sudah dibayar ' + rp(x) + ', kurang ' + rp(o.total - x) + '.'); render();
+}
+async function setPayAmt(pid, x){
+  const p = S.payments.find(v => v.id === pid); if (!p) return;
+  const o = findOrder(p.orderId); if (!o) return;
+  x = Math.max(0, Math.round(x || 0));
+  const lain = o.dibayar - p.jumlah;
+  if (x > o.total - lain) x = o.total - lain;
+  if (x <= 0) await del('payments', pid);
+  else await put('payments', { jumlah: x, jenis: lain + x >= o.total ? 'Pelunasan' : 'DP' }, pid);
+  toast('Sudah dibayar ' + rp(lain + x) + ', kurang ' + rp(o.total - lain - x) + '.'); render();
 }
 async function setNote(id, text){
   const raw = S.orders.find(x => x.id === id);
@@ -469,11 +512,13 @@ document.addEventListener('change', ev => {
   const t = ev.target;
   if (t.id === 'per-from' || t.id === 'per-to') setPeriode($('per-from').value, $('per-to').value);
   else if (t.dataset && t.dataset.paydate) { if (t.value) put('payments', { tanggal: t.value }, t.dataset.paydate).then(() => toast('Tanggal bayar diperbarui.')).catch(fail); }
+  else if (t.dataset && t.dataset.paid) setPaid(t.dataset.paid, parseFloat(t.value)).catch(fail);
+  else if (t.dataset && t.dataset.payamt) setPayAmt(t.dataset.payamt, parseFloat(t.value)).catch(fail);
   else if (t.dataset && t.dataset.status) setStatus(t.dataset.status, t.value).catch(fail);
   else if (t.dataset && t.dataset.note) setNote(t.dataset.note, t.value.trim()).catch(fail);
 });
 document.addEventListener('focusout', ev => {
-  if (pending && ev.target.matches && ev.target.matches('input.note')){ pending = false; setTimeout(render, 0); }
+  if (pending && ev.target.matches && ev.target.matches('input.note, input.amt')){ pending = false; setTimeout(render, 0); }
 });
 
 /* ---------- events ---------- */
@@ -488,6 +533,12 @@ document.addEventListener('click', async ev => {
   armed = null;
   try {
     if (act === 'close') closeDlg();
+    else if (act === 'add-pay') {
+      const o = findOrder(id), q = k => document.querySelector('#view [data-' + k + '="' + id + '"]');
+      let amt = Math.round(parseFloat(q('newamt').value) || 0);
+      if (!o || amt <= 0) toast('Isi nominalnya dulu.');
+      else { if (amt > o.sisa) amt = o.sisa; await put('payments', { orderId: id, tanggal: q('newdate').value || today(), jumlah: amt, jenis: amt >= o.sisa ? 'Pelunasan' : 'DP', metode: 'Transfer' }); toast('Pembayaran ' + rp(amt) + ' tercatat.'); }
+    }
     else if (act === 'per') {
       const n = new Date(), p = el.dataset.p;
       if (p === 'bulan') setPeriode(iso(new Date(n.getFullYear(), n.getMonth(), 1)), iso(new Date(n.getFullYear(), n.getMonth() + 1, 0)));
@@ -511,7 +562,12 @@ document.addEventListener('click', async ev => {
     else if (act === 'wipe-contoh') { for (const c of COLS) for (const r of S[c].filter(x => x.contoh)) await del(c, r.id); toast('Data contoh dihapus.'); }
   } catch (e) { fail(e); }
 });
-document.addEventListener('keydown', ev => { if (ev.key === 'Enter' && ev.target.matches('tr.click')) ev.target.click(); });
+document.addEventListener('keydown', ev => {
+  if (ev.key !== 'Enter') return;
+  if (ev.target.matches('tr.click')) ev.target.click();
+  else if (ev.target.matches('input.amt[data-newamt]')) { ev.preventDefault(); const b = ev.target.parentElement.querySelector('[data-act="add-pay"]'); ev.target.blur(); if (b) b.click(); }
+  else if (ev.target.matches('#view input.amt, input.note')) ev.target.blur();
+});
 document.addEventListener('input', ev => { if (ev.target.closest('#o-items')) recalcForm(); });
 document.addEventListener('change', ev => {
   const sel = ev.target.closest('#o-items select'); if (!sel) return;
