@@ -31,7 +31,7 @@ body{margin:0}
 #login{max-width:380px;margin:12vh auto 0;display:flex;flex-direction:column;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:24px}
 #f-login{display:flex;flex-direction:column;gap:12px}
 body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);padding-inline:16px;padding-block:20px 64px}
-.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+.wrap{max-width:1320px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
 h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
 h1{font-size:26px;font-weight:700;letter-spacing:-.01em}
 h2{font-size:19px;font-weight:700}
@@ -77,21 +77,27 @@ button.small{padding:4px 10px;font-size:13px}
 
 .tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
 table{border-collapse:collapse;width:100%;font-size:14px}
-th{text-align:left;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
-td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{text-align:left;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:10px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top}
 tr:last-child td{border-bottom:0}
 td.r,th.r{text-align:right;white-space:nowrap}
 tr.click{cursor:pointer} tr.click:hover td{background:var(--bg)}
 .pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
-select.st{width:auto;min-width:118px;padding:5px 8px;font-size:13px;font-weight:600;border-color:currentColor;background:var(--surface)}
+select.st{width:auto;min-width:100px;padding:5px 8px;font-size:13px;font-weight:600;border-color:currentColor;background:var(--surface)}
 select.st option{color:var(--ink)}
 .st-lunas{color:var(--good)} .st-dp,.st-cicilan{color:var(--warn)} .st-belum{color:var(--ink)} .st-batal{color:var(--muted)}
+tr.main td{border-bottom:0;padding-bottom:8px}
+tr.sub td{padding-top:0}
+.hist{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;background:var(--bg);border-radius:6px;padding:8px 12px}
+.pay{display:inline-flex;gap:8px;align-items:center;font-size:13.5px}
+.tot{font-size:13.5px;border-left:1px solid var(--line);padding-left:18px}
 input.paydate{width:auto;font-size:13px;padding:5px 8px}
 .periode{display:flex;flex-wrap:wrap;gap:8px;align-items:end}
 .periode label.f{width:150px}
 .src{font-size:13px;color:var(--muted)}
-input.note{min-width:160px;font-size:13.5px;padding:5px 8px}
+input.note{min-width:110px;font-size:13.5px;padding:5px 8px}
 tr.batal td{opacity:.6}
+tr.click:hover + tr.sub td{background:transparent}
 .empty{padding:28px 18px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:12px;align-items:center}
 
 dialog{border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:0;width:min(680px,calc(100vw - 24px));max-height:calc(100dvh - 32px)}
@@ -166,8 +172,8 @@ function calc(S, today){
   const orders = S.orders.map(o => {
     const total = o.items.reduce((a, i) => a + lineTotal(i), 0);
     const dibayar = paid[o.id] || 0, sisa = total - dibayar;
-    const auto = sisa <= 0 ? 'lunas' : (dibayar > 0 ? (cnt[o.id] > 1 ? 'cicilan' : 'dp') : 'belum');
-    const status = o.status || auto;
+    const auto = sisa <= 0 ? 'lunas' : (dibayar > 0 ? 'dp' : 'belum');
+    const status = (o.status === 'cicilan' ? 'dp' : o.status) || auto;
     const telat = status !== 'batal' && status !== 'lunas' && sisa > 0 && !!o.jatuhTempo && o.jatuhTempo < today;
     return Object.assign({}, o, { total, dibayar, sisa, status, telat });
   }).sort((a, b) => b.tanggal.localeCompare(a.tanggal) || (b.createdAt || 0) - (a.createdAt || 0));
@@ -196,7 +202,7 @@ function nextInvoiceNo(orders, tanggal){
 }
 function jenisBayar(sudahDibayar, sisaSebelum, jumlah){
   if (jumlah >= sisaSebelum) return 'Pelunasan';
-  return sudahDibayar > 0 ? 'Cicilan' : 'DP';
+  return 'DP';
 }
 /*LOGIC-END*/
 
@@ -212,7 +218,7 @@ const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0
 const today = () => iso(new Date());
 const plusDays = (s, n) => { const d = new Date(s + 'T00:00:00'); d.setDate(d.getDate() + n); return iso(d); };
 const tgl = s => s ? new Date(s + 'T00:00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
-const STATUS = { belum: 'Belum bayar', dp: 'DP', cicilan: 'Cicilan', lunas: 'Lunas', batal: 'Batal' };
+const STATUS = { belum: 'Belum bayar', dp: 'DP', lunas: 'Lunas', batal: 'Batal' };
 let pending = false;
 const typing = sel => { const a = document.activeElement; return !!(a && a.matches && a.matches(sel)); };
 
@@ -273,17 +279,18 @@ function statusSelect(o, pre){
   return '<select id="' + pre + '-st-' + o.id + '" class="st st-' + o.status + '" data-status="' + o.id + '" aria-label="Status pembayaran">' + Object.keys(STATUS).map(k => '<option value="' + k + '"' + (k === o.status ? ' selected' : '') + '>' + STATUS[k] + '</option>').join('') + '</select>';
 }
 function noteInput(o, pre){ return '<input id="' + pre + '-note-' + o.id + '" class="note" data-note="' + o.id + '" value="' + esc(o.catatan || '') + '" placeholder="Tulis note" aria-label="Note" autocomplete="off">'; }
-function payDates(o){
+const jn = j => j === 'Cicilan' ? 'DP' : (j || '');
+function payHistory(o){
   const ps = S.payments.filter(p => p.orderId === o.id).sort((a, b) => a.tanggal.localeCompare(b.tanggal));
-  if (!ps.length) return '<span class="muted">Belum ada</span>';
-  const last = ps[ps.length - 1];
-  return ps.slice(0, -1).map(p => '<span class="muted">' + tgl(p.tanggal) + ' · ' + esc(p.jenis) + '</span><br>').join('') +
-    '<input type="date" class="paydate" id="t-pd-' + last.id + '" data-paydate="' + last.id + '" value="' + esc(last.tanggal) + '" aria-label="Tanggal pembayaran terakhir"><br><span class="muted">' + esc(last.jenis) + ' · ' + rp(last.jumlah) + '</span>';
+  const list = ps.length ? ps.map(p => '<span class="pay"><input type="date" class="paydate" id="t-pd-' + p.id + '" data-paydate="' + p.id + '" value="' + esc(p.tanggal) + '" aria-label="Tanggal bayar"><span>' + esc(jn(p.jenis)) + '</span><strong class="num">' + rp(p.jumlah) + '</strong></span>').join('') : '<span class="muted">Belum ada pembayaran</span>';
+  const kurang = o.status === 'batal' ? 0 : Math.max(o.sisa, 0);
+  return '<div class="hist"><span class="label">Riwayat pembayaran</span>' + list + '<span class="tot">Sudah dibayar <strong class="num">' + rp(o.dibayar) + '</strong> · Kurang <strong class="num" style="color:var(' + (kurang > 0 ? '--crit' : '--good') + ')">' + rp(kurang) + '</strong></span></div>';
 }
 function orderRows(list){
-  return list.map(o => '<tr class="click' + (o.status === 'batal' ? ' batal' : '') + '" data-act="open-order" data-id="' + o.id + '" tabindex="0"><td style="white-space:nowrap"><span class="num">' + esc(o.no) + '</span><br><button class="small primary" style="margin-top:6px" data-act="open-order" data-id="' + o.id + '">Buka invoice</button></td><td>' + esc(o.customerName) + '<br><span class="muted">' + o.items.map(i => esc(i.nama) + ' ' + kg(i.qty)).join(', ') + '</span></td><td>' + tgl(o.tanggal) + '<br><span class="muted">tempo ' + tgl(o.jatuhTempo) + '</span>' + (o.telat ? '<br><span style="color:var(--crit)">lewat jatuh tempo</span>' : '') + '</td><td class="r num">' + rp(o.total) + '</td><td class="r num">' + rp(o.dibayar) + '</td><td class="r num">' + rp(o.status === 'batal' ? 0 : Math.max(o.sisa, 0)) + '</td><td>' + statusSelect(o, 't') + '</td><td>' + payDates(o) + '</td><td>' + noteInput(o, 't') + '</td></tr>').join('');
+  return list.map(o => { const b = o.status === 'batal' ? ' batal' : ''; return '<tr class="click main' + b + '" data-act="open-order" data-id="' + o.id + '" tabindex="0"><td style="white-space:nowrap"><span class="num">' + esc(o.no) + '</span><br><button class="small primary" style="margin-top:6px" data-act="open-order" data-id="' + o.id + '">Buka invoice</button></td><td>' + esc(o.customerName) + '<br><span class="muted">' + o.items.map(i => esc(i.nama) + ' ' + kg(i.qty)).join(', ') + '</span></td><td>' + tgl(o.tanggal) + '<br><span class="muted">tempo ' + tgl(o.jatuhTempo) + '</span>' + (o.telat ? '<br><span style="color:var(--crit)">lewat jatuh tempo</span>' : '') + '</td><td class="r num">' + rp(o.total) + '</td><td class="r num">' + rp(o.dibayar) + '</td><td class="r num">' + rp(o.status === 'batal' ? 0 : Math.max(o.sisa, 0)) + '</td><td>' + statusSelect(o, 't') + '</td><td>' + noteInput(o, 't') + '</td></tr>' +
+    '<tr class="sub' + b + '"><td colspan="8">' + payHistory(o) + '</td></tr>'; }).join('');
 }
-const orderHead = '<tr><th>No. invoice</th><th>Customer / barang</th><th>Tanggal</th><th class="r">Total</th><th class="r">Dibayar</th><th class="r">Sisa</th><th>Status pembayaran</th><th>Tanggal bayar</th><th>Note</th></tr>';
+const orderHead = '<tr><th>No. invoice</th><th>Customer / barang</th><th>Tanggal order</th><th class="r">Total</th><th class="r">Sudah dibayar</th><th class="r">Kurang</th><th>Status pembayaran</th><th>Note</th></tr>';
 
 let pFrom = '', pTo = '';
 try { const s = JSON.parse(localStorage.getItem('periode') || '{}'); pFrom = s.f || ''; pTo = s.t || ''; } catch (e) {}
@@ -307,9 +314,9 @@ function vOrder(C){
     (C.orders.length ? '<div class="tablebox"><table>' + orderHead + orderRows(C.orders) + '</table></div>' : '<div class="tablebox"><div class="empty">Belum ada order.<button class="primary" data-act="new-order">+ Order baru</button></div></div>');
 }
 function vStok(C){
-  const mut = S.stockin.map(s => ({ t: s.tanggal, p: s.productId, q: s.qty, k: s.catatan || 'Barang masuk', id: s.id, s: 0, c: 0 }))
+  const mut = S.stockin.map(s => ({ t: s.tanggal, p: s.productId, q: s.qty, k: s.catatan || 'Barang masuk', id: s.id, s: 0, c: Date.parse(s.created_at || s.tanggal) || 0 }))
     .concat(S.orders.filter(o => o.status !== 'batal').flatMap(o => o.items.map(i => ({ t: o.tanggal, p: i.productId, q: -i.qty, k: (o.no || '') + ' · ' + o.customerName, s: 1, c: o.createdAt || 0 }))))
-    .sort((a, b) => b.t.localeCompare(a.t) || b.s - a.s || b.c - a.c);
+    .sort((a, b) => b.t.localeCompare(a.t) || b.c - a.c || b.s - a.s);
   const name = id => (S.products.find(p => p.id === id) || {}).nama || '?';
   return '<div class="row"><h2>Stok &amp; harga</h2><div class="actions"><button data-act="new-product">+ Produk</button><button data-act="stock-in">+ Barang masuk</button><button data-act="toko">Data toko di invoice</button></div></div>' +
     '<div class="tablebox"><table><tr><th>Produk</th><th class="r">Harga / kg</th><th class="r">Masuk</th><th class="r">Terjual</th><th class="r">Sisa stok</th><th class="r">Batas min.</th><th></th></tr>' +
@@ -385,7 +392,7 @@ function orderDetail(o){
     '<div class="grid2"><label class="f">Status pembayaran' + statusSelect(o, 'd') + '</label><label class="f">Note' + noteInput(o, 'd') + '</label></div>' +
     '<div class="sum num"><span>Total</span><span style="text-align:right">' + rp(o.total) + '</span><span>Sudah dibayar</span><span style="text-align:right">' + rp(o.dibayar) + '</span><span class="t">Sisa tagihan</span><span class="t" style="text-align:right">' + rp(Math.max(o.sisa, 0)) + '</span></div>' +
     '<h3>Pembayaran</h3>' +
-    (pays.length ? '<div class="tablebox"><table>' + pays.map(p => '<tr><td>' + tgl(p.tanggal) + '</td><td>' + esc(p.jenis) + ' · ' + esc(p.metode || '') + '</td><td class="r num">' + rp(p.jumlah) + '</td><td class="r"><button class="small danger" data-act="del-pay" data-id="' + p.id + '" data-confirm="Yakin?">Hapus</button></td></tr>').join('') + '</table></div>' : '<span class="muted">Belum ada pembayaran.</span>') +
+    (pays.length ? '<div class="tablebox"><table>' + pays.map(p => '<tr><td>' + tgl(p.tanggal) + '</td><td>' + esc(jn(p.jenis)) + ' · ' + esc(p.metode || '') + '</td><td class="r num">' + rp(p.jumlah) + '</td><td class="r"><button class="small danger" data-act="del-pay" data-id="' + p.id + '" data-confirm="Yakin?">Hapus</button></td></tr>').join('') + '</table></div>' : '<span class="muted">Belum ada pembayaran.</span>') +
     (o.sisa > 0 && o.status !== 'batal' ? '<form id="f-pay" data-id="' + o.id + '" class="grid2" style="align-items:end"><label class="f">Tanggal<input id="p-tgl" type="date" value="' + today() + '" required></label><label class="f">Jumlah<input class="num" id="p-jml" type="number" min="1" step="1" max="' + o.sisa + '" value="' + o.sisa + '" inputmode="numeric" required></label><label class="f">Cara bayar<select id="p-metode"><option>Transfer</option><option>Tunai</option></select></label><button class="primary">Catat pembayaran</button></form>' : '') +
     '<div class="actions"><button class="danger" data-act="del-order" data-id="' + o.id + '" data-confirm="Klik lagi: order dan pembayarannya dihapus">Hapus order</button>' +
     '<button data-act="close">Tutup</button><button class="primary" data-act="pdf" data-id="' + o.id + '">Download invoice PDF</button></div>';
