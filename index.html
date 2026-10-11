@@ -4,121 +4,152 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Buku Order Pistachio</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: buku kas satu kolom. Takaran stok per kg di paling atas, lalu angka uang, lalu tabel tagihan. Order adalah satu-satunya pintu input. */
+/* Layout: sidebar pil di kiri, konten kartu membulat di kanan. Dashboard: kolom ringkasan pastel + grafik. */
 :root{
-  --bg:#ECEFE4; --surface:#F9FAF5; --line:#D3D9C6; --ink:#2B2230; --muted:#6C6672;
-  --accent:#55772A; --accent-ink:#FFFFFF; --raisin:#6E2C4B;
-  --good:#2F7A4A; --warn:#A8690B; --crit:#B3382F; --track:#DDE3CF;
-  --display:"Bricolage Grotesque","Trebuchet MS",sans-serif;
-  --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --bg:#E9E9EC; --panel:#DDDDE1; --surface:#FFFFFF; --line:#E4E4EA; --ink:#2B2B31; --muted:#82828C;
+  --lime:#E6F970; --peach:#FFF2E2; --lav:#EFEAFF; --cyan:#E1F6F9;
+  --c1:#E0892B; --c2:#7C5CE6; --c3:#14A6BA;
+  --good:#22A05B; --warn:#B26F0B; --crit:#D2453B; --track:#ECECF0; --raisin:#7C5CE6; --accent:#2B2B31;
+  --body:"Inter","Segoe UI",system-ui,sans-serif; --display:var(--body); --mono:var(--body);
+  --r:22px;
 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#1B191F; --surface:#25222B; --line:#3B3743; --ink:#ECEDE3; --muted:#A39DAA;
-  --accent:#A6C36A; --accent-ink:#1B191F; --raisin:#D58CAE;
-  --good:#7CCB96; --warn:#E3B052; --crit:#F08379; --track:#34303C; color-scheme:dark } }
-:root[data-theme="dark"]{
-  --bg:#1B191F; --surface:#25222B; --line:#3B3743; --ink:#ECEDE3; --muted:#A39DAA;
-  --accent:#A6C36A; --accent-ink:#1B191F; --raisin:#D58CAE;
-  --good:#7CCB96; --warn:#E3B052; --crit:#F08379; --track:#34303C; color-scheme:dark }
-
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{color-scheme:light dark}
-body{margin:0}
-#login{max-width:380px;margin:12vh auto 0;display:flex;flex-direction:column;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:24px}
-#f-login{display:flex;flex-direction:column;gap:12px}
-body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);padding-inline:16px;padding-block:20px 64px}
-.wrap{max-width:1320px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
-h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
-h1{font-size:26px;font-weight:700;letter-spacing:-.01em}
-h2{font-size:19px;font-weight:700}
+html{color-scheme:light}
+body{margin:0;background:var(--bg);color:var(--ink);font:14.5px/1.5 var(--body)}
+h1,h2,h3{margin:0;line-height:1.2;text-wrap:balance;font-weight:600}
+h1{font-size:26px;font-weight:500;letter-spacing:-.01em}
+h2{font-size:18px;font-weight:500}
 h3{font-size:15px;font-weight:500}
-.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.num{font-variant-numeric:tabular-nums}
 .muted{color:var(--muted)}
-.label{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.label{font-size:12.5px;color:var(--muted);font-weight:500}
 
-.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
+.shell{display:flex;gap:14px;max-width:1500px;margin:0 auto;padding:18px 16px 60px;align-items:flex-start}
+.side{flex:0 0 206px;position:sticky;top:18px;display:flex;flex-direction:column;gap:18px}
+.logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:500;padding:6px 6px 2px}
+.logo svg{width:34px;height:34px}
+nav{display:flex;flex-direction:column;gap:8px}
+nav button,.navbtn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--panel);border:0;border-radius:999px;color:var(--ink);font:500 15px var(--body);padding:13px 18px;cursor:pointer}
+nav button svg,.navbtn svg{width:19px;height:19px;flex:none;opacity:.75}
+nav button:hover,.navbtn:hover{background:#D3D3D8}
+nav button[aria-selected="true"]{background:var(--lime);font-weight:600}
+nav button[aria-selected="true"] svg{opacity:1}
+.content{flex:1;min-width:0;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;padding:4px 2px}
 .brand{display:flex;flex-direction:column;gap:2px;min-width:0}
-nav{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--line)}
-nav button{background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);font:500 15px var(--body);padding:10px 14px;cursor:pointer;margin-bottom:-1px}
-nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+@media (max-width:860px){
+  .shell{flex-direction:column;align-items:stretch}
+  .side{position:static;flex:none;width:100%;gap:10px}
+  nav{flex-direction:row;flex-wrap:wrap} nav button{width:auto;padding:10px 14px;font-size:14px}
+  .navbtn{width:auto;align-self:flex-start;padding:8px 14px;font-size:14px}
+}
 
-button,.btn{font:500 14px var(--body);border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;cursor:pointer}
-button:hover{border-color:var(--muted)}
-button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+button{font:500 14px var(--body);border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 16px;cursor:pointer}
+button:hover{border-color:#C9C9D1}
+button.primary{background:var(--lime);border-color:transparent;color:var(--ink);font-weight:600}
+button.primary:hover{filter:brightness(.96)}
 button.danger{color:var(--crit)}
-button.link{border:0;background:none;padding:0;color:var(--accent);text-decoration:underline;font-weight:500}
-button.small{padding:4px 10px;font-size:13px}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.small{padding:5px 12px;font-size:13px}
+button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+:focus-visible{outline:2px solid var(--c2);outline-offset:2px}
 
-.notice{border:1px dashed var(--raisin);border-radius:6px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;color:var(--ink)}
-.notice strong{color:var(--raisin)}
-
-.section{display:flex;flex-direction:column;gap:16px}
+.section{display:flex;flex-direction:column;gap:18px}
 .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.card{background:var(--surface);border-radius:var(--r);padding:20px 22px;min-width:0}
+.cardhead{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin-bottom:12px}
 
-/* takaran stok */
-.gauges{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-.gauge{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
-.gauge .big{font:500 30px/1 var(--mono);font-variant-numeric:tabular-nums}
-.gauge .big small{font-size:14px;color:var(--muted)}
-.bar{position:relative;height:14px;border-radius:3px;background:var(--track);overflow:visible}
-.bar i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--accent)}
-.bar.low i{background:var(--warn)} .bar.out i{background:var(--crit)}
-.bar b{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
-.gauge .foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;font-size:13px;color:var(--muted)}
+/* dashboard */
+.filter{display:flex;flex-wrap:wrap;gap:10px;align-items:end;background:var(--surface);border-radius:var(--r);padding:12px 18px}
+.filter .sp{flex:1}
+.periode{display:flex;flex-wrap:wrap;gap:8px;align-items:end}
+.periode label.f{width:150px}
+.dash{display:grid;grid-template-columns:minmax(270px,330px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:1080px){.dash{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border-radius:var(--r);padding:16px 0 0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.panel>h2{padding:4px 16px 6px}
+.fig{border-radius:var(--r);padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.fig.a{background:var(--peach)} .fig.b{background:var(--lav)} .fig.c{background:var(--cyan)}
+.fig .h{display:flex;gap:14px;align-items:center;min-width:0}
+.fig .ic{flex:none;width:50px;height:50px;border-radius:12px;display:grid;place-items:center}
+.fig.a .ic{background:#FFE2BF;color:var(--c1)} .fig.b .ic{background:#DCD2FF;color:var(--c2)} .fig.c .ic{background:#C4EEF3;color:var(--c3)}
+.fig .ic svg{width:26px;height:26px}
+.fig .v{font-size:24px;font-weight:600;line-height:1.15;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.fig .d{font-size:13.5px;color:var(--muted)}
+.fig .d b{font-weight:600} .fig .d b.up{color:var(--good)} .fig .d b.down{color:var(--crit)}
+.stok{background:var(--surface);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:16px}
+.gauge{display:flex;flex-direction:column;gap:7px;min-width:0}
+.gauge .big{font-size:24px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.gauge .big small{font-size:13px;font-weight:400;color:var(--muted)}
+.bar{position:relative;height:10px;border-radius:99px;background:var(--track)}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:99px;background:var(--c3)}
+.bar.low i{background:var(--c1)} .bar.out i{background:var(--crit)}
+.bar b{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);border-radius:2px}
+.gauge .foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;font-size:12.5px;color:var(--muted)}
+.right{display:flex;flex-direction:column;gap:18px;min-width:0}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:18px}
+@media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--ink)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:auto}
+.chart text{font:12px var(--body);fill:var(--muted)}
+#ch-tip{position:absolute;top:6px;pointer-events:none;background:var(--ink);color:#fff;border-radius:10px;padding:8px 12px;font-size:12.5px;line-height:1.5;white-space:nowrap;z-index:2}
+#ch-tip i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.donut{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center}
+.donut svg{width:170px;height:170px;flex:none}
+.donut .big{font:600 26px var(--body);fill:var(--ink)} .donut .sm{font:12px var(--body);fill:var(--muted)}
+.dl{display:flex;flex-direction:column;gap:10px;font-size:13.5px;min-width:150px}
+.dl div{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center}
+.dl i{width:10px;height:10px;border-radius:50%}
+.blank{padding:34px 16px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:12px;align-items:center}
+.src{font-size:13px;color:var(--muted)}
 
-.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;border-block:1px solid var(--line)}
-.fig{padding:14px 16px 14px 0;display:flex;flex-direction:column;gap:4px;min-width:0}
-.fig .v{font:500 21px var(--mono);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-
-.tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+/* tabel */
+.tablebox{overflow-x:auto;background:var(--surface);border-radius:var(--r);padding:6px 10px}
+.card .tablebox{padding:0;border-radius:0}
 table{border-collapse:collapse;width:100%;font-size:14px}
-th{text-align:left;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:10px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
-td{padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{text-align:left;font-size:13px;color:var(--muted);font-weight:500;padding:12px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}
 tr:last-child td{border-bottom:0}
 td.r,th.r{text-align:right;white-space:nowrap}
-tr.click{cursor:pointer} tr.click:hover td{background:var(--bg)}
-.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
-select.st{width:auto;min-width:100px;padding:5px 8px;font-size:13px;font-weight:600;border-color:currentColor;background:var(--surface)}
+tr.click{cursor:pointer}
+select.st{width:auto;min-width:100px;padding:5px 8px;font-size:13px;font-weight:600;border-color:currentColor;background:var(--surface);border-radius:999px}
 select.st option{color:var(--ink)}
-.st-lunas{color:var(--good)} .st-dp,.st-cicilan{color:var(--warn)} .st-belum{color:var(--ink)} .st-batal{color:var(--muted)}
+.st-lunas{color:var(--good)} .st-dp{color:var(--warn)} .st-belum{color:var(--ink)} .st-batal{color:var(--muted)}
 tr.main td{border-bottom:0;padding-bottom:8px}
 tr.sub td{padding-top:0}
-.hist{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;background:var(--bg);border-radius:6px;padding:8px 12px}
+.hist{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;background:#F4F4F7;border-radius:14px;padding:9px 14px}
 .pay{display:inline-flex;gap:8px;align-items:center;font-size:13.5px}
 .tot{font-size:13.5px;border-left:1px solid var(--line);padding-left:18px}
 input.amt{width:128px;text-align:right;font-size:13.5px;padding:5px 8px}
 input.paydate{width:auto;font-size:13px;padding:5px 8px}
-.periode{display:flex;flex-wrap:wrap;gap:8px;align-items:end}
-.periode label.f{width:150px}
-.src{font-size:13px;color:var(--muted)}
 input.note{min-width:110px;font-size:13.5px;padding:5px 8px}
-tr.batal td{opacity:.6}
-tr.click:hover + tr.sub td{background:transparent}
-.empty{padding:28px 18px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:12px;align-items:center}
+tr.batal td{opacity:.55}
+.empty{padding:30px 18px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:12px;align-items:center}
 
-dialog{border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:0;width:min(680px,calc(100vw - 24px));max-height:calc(100dvh - 32px)}
-dialog::backdrop{background:rgba(20,16,24,.55)}
-.dlg{padding:20px;display:flex;flex-direction:column;gap:16px}
+/* form & dialog */
+dialog{border:0;border-radius:var(--r);background:var(--surface);color:var(--ink);padding:0;width:min(700px,calc(100vw - 24px));max-height:calc(100dvh - 32px);box-shadow:0 20px 60px rgba(30,30,40,.25)}
+dialog::backdrop{background:rgba(30,30,40,.45)}
+.dlg{padding:24px;display:flex;flex-direction:column;gap:16px}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
 label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);min-width:0}
-input,select,textarea{font:15px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
-input.num{font-family:var(--mono)}
+input,select,textarea{font:14.5px var(--body);color:var(--ink);background:#F4F4F7;border:1px solid var(--line);border-radius:12px;padding:9px 12px;width:100%;min-width:0}
 .items{display:flex;flex-direction:column;gap:8px}
 .item{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,.8fr) minmax(0,1fr) auto;gap:8px;align-items:end}
 @media (max-width:520px){.item{grid-template-columns:1fr 1fr}}
 .totalbar{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding-top:12px}
-.totalbar .v{font:500 22px var(--mono)}
+.totalbar .v{font-size:22px;font-weight:600}
 .err{color:var(--crit);font-size:13.5px} .hint{color:var(--warn);font-size:13.5px}
 .actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
 .inv-head{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between}
-.sum{display:grid;grid-template-columns:1fr auto;gap:4px 24px;justify-content:end;margin-left:auto;max-width:340px;width:100%}
+.sum{display:grid;grid-template-columns:1fr auto;gap:4px 24px;margin-left:auto;max-width:340px;width:100%}
 .sum .t{font-weight:600;border-top:1px solid var(--line);padding-top:6px}
-#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:6px;font-size:14px;max-width:calc(100vw - 32px)}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;font-size:14px;max-width:calc(100vw - 32px);z-index:10}
+#login{max-width:390px;margin:12vh auto 0;display:flex;flex-direction:column;gap:16px;background:var(--surface);border-radius:var(--r);padding:28px}
+#f-login{display:flex;flex-direction:column;gap:12px}
 </style>
 </head>
 <body>
@@ -133,24 +164,24 @@ input.num{font-family:var(--mono)}
   <div id="login-msg" class="err"></div>
 </section>
 
-<div class="wrap" id="app" hidden>
-  <header class="top">
-    <div class="brand">
-      <h1>Buku Order Pistachio</h1>
-      <span class="muted" id="sub">Pistachio dan raisins, semua dihitung per kg</span>
-    </div>
-    <div class="actions"><button data-act="logout">Keluar</button><button class="primary" data-act="new-order" id="btn-new-order">+ Order baru</button></div>
-  </header>
-
-  <nav role="tablist" id="tabs">
-    <button role="tab" data-tab="ringkasan">Ringkasan</button>
-    <button role="tab" data-tab="order">Invoice &amp; order status</button>
-    <button role="tab" data-tab="stok">Stok &amp; harga</button>
-    <button role="tab" data-tab="customer">Customer</button>
-  </nav>
-
-  <div id="notice" class="notice" hidden></div>
-  <main id="view" class="section"><div class="empty">Memuat data…</div></main>
+<div class="shell" id="app" hidden>
+  <aside class="side">
+    <div class="logo"><svg viewBox="0 0 40 40" aria-hidden="true"><path fill="#2B2B31" d="M20 1l4.2 10.2L34 6l-5.2 9.8L39 20l-10.2 4.2L34 34l-9.8-5.2L20 39l-4.2-10.2L6 34l5.2-9.8L1 20l10.2-4.2L6 6l9.8 5.2z"/></svg><span>Buku Order</span></div>
+    <nav role="tablist" id="tabs">
+      <button role="tab" data-tab="ringkasan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>Dashboard</button>
+      <button role="tab" data-tab="order"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>Invoice &amp; order</button>
+      <button role="tab" data-tab="stok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>Stok &amp; harga</button>
+      <button role="tab" data-tab="customer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c2.9.2 5 2.6 5 5.8"/></svg>Customer</button>
+    </nav>
+    <button class="navbtn" data-act="logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H5v16h5M15 8l4 4-4 4M9 12h10"/></svg>Keluar</button>
+  </aside>
+  <div class="content">
+    <header class="top">
+      <div class="brand"><h1 id="page-title">Selamat datang</h1><span class="muted" id="sub">Ini kondisi order, uang masuk, dan stok kamu.</span></div>
+      <button class="primary" data-act="new-order" id="btn-new-order">+ Order baru</button>
+    </header>
+    <main id="view" class="section"><div class="card"><div class="empty">Memuat data…</div></div></main>
+  </div>
 </div>
 
 <dialog id="dlg"><div class="dlg" id="dlg-body"></div></dialog>
@@ -255,12 +286,14 @@ const strip = row => { const o = Object.assign({}, row); delete o.id; return o; 
 /* ---------- render ---------- */
 function render(){
   document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tab));
+  $('page-title').textContent = { ringkasan: 'Selamat datang', order: 'Invoice & order status', stok: 'Stok & harga', customer: 'Customer' }[tab];
+  $('sub').textContent = { ringkasan: 'Ini kondisi order, uang masuk, dan stok kamu.', order: 'Status pembayaran, riwayat bayar, dan invoice tiap order.', stok: 'Sisa stok per kg, harga jual, dan riwayat keluar masuk.', customer: 'Daftar customer dan sisa tagihannya.' }[tab];
   if (!ready) return;
 
   const C = calc(S, today());
   const v = $('view');
   if (!S.products.length){
-    v.innerHTML = '<div class="tablebox"><div class="empty"><h2>Belum ada produk</h2><span>Mulai dari produk dan stok awalnya. Setelah itu setiap order otomatis memotong stok dan membuat invoice.</span><button class="primary" data-act="new-product">+ Tambah produk</button></div></div>';
+    v.innerHTML = '<div class="card"><div class="empty"><h2>Belum ada produk</h2><span>Mulai dari produk dan stok awalnya. Setelah itu setiap order otomatis memotong stok dan membuat invoice.</span><button class="primary" data-act="new-product">+ Tambah produk</button></div></div>';
   } else if (typing('#view input.note, #view input.amt')) pending = true;
   else v.innerHTML = ({ ringkasan: vRingkasan, order: vOrder, stok: vStok, customer: vCustomer })[tab](C);
   if (openOrder && $('dlg').open){ const o = C.orders.find(x => x.id === openOrder); if (!o) closeDlg(); else if (typing('#dlg input.note')) pending = true; else $('dlg-body').innerHTML = orderDetail(o); }
@@ -271,10 +304,10 @@ function gauge(p, s){
   const pct = Math.max(0, Math.min(100, s.sisa / scale * 100));
   const cls = s.sisa <= 0 ? 'out' : (s.sisa < min ? 'low' : '');
   const note = s.sisa <= 0 ? '<span style="color:var(--crit)">Stok habis</span>' : (s.sisa < min ? '<span style="color:var(--warn)">Di bawah batas ' + kg(min) + '</span>' : 'Batas minimum ' + kg(min));
-  return '<div class="gauge"><div class="row"><h3>' + esc(p.nama) + '</h3><span class="num muted">' + rp(p.harga) + '/kg</span></div>' +
+  return '<div class="gauge"><div class="row"><h3>' + esc(p.nama) + '</h3><span class="num muted" style="font-size:13px">' + rp(p.harga) + '/kg</span></div>' +
     '<div class="big">' + Number(s.sisa).toLocaleString('id-ID', { maximumFractionDigits: 2 }) + ' <small>kg tersisa</small></div>' +
     '<div class="bar ' + cls + '"><i style="width:' + pct + '%"></i>' + (min ? '<b style="left:' + Math.min(100, min / scale * 100) + '%" title="Batas minimum"></b>' : '') + '</div>' +
-    '<div class="foot"><span>' + note + '</span><span class="num">masuk ' + kg(s.masuk) + ' · terjual ' + kg(s.keluar) + '</span></div></div>';
+    '<div class="foot"><span>' + note + '</span><span class="num">terjual ' + kg(s.keluar) + '</span></div></div>';
 }
 function statusSelect(o, pre){
   return '<select id="' + pre + '-st-' + o.id + '" class="st st-' + o.status + '" data-status="' + o.id + '" aria-label="Status pembayaran">' + Object.keys(STATUS).map(k => '<option value="' + k + '"' + (k === o.status ? ' selected' : '') + '>' + STATUS[k] + '</option>').join('') + '</select>';
@@ -299,22 +332,98 @@ const orderHead = '<tr><th>No. invoice</th><th>Customer / barang</th><th>Tanggal
 let pFrom = '', pTo = '';
 try { const s = JSON.parse(localStorage.getItem('periode') || '{}'); pFrom = s.f || ''; pTo = s.t || ''; } catch (e) {}
 function setPeriode(f, t){ pFrom = f || ''; pTo = t || ''; try { localStorage.setItem('periode', JSON.stringify({ f: pFrom, t: pTo })); } catch (e) {} render(); }
+const IC = {
+  uang: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M14.6 9.6C14.2 8.6 13.2 8 12 8c-1.5 0-2.6.8-2.6 2s1 1.7 2.6 2 2.6.8 2.6 2-1.1 2-2.6 2c-1.2 0-2.2-.6-2.6-1.6M12 6.4V8M12 16v1.6"/></svg>',
+  order: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4v3h6V4M9 12h6M9 16h4"/></svg>',
+  tagih: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>'
+};
+let chartData = null;
+const short = n => n >= 1e9 ? (n / 1e9).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' M' : n >= 1e6 ? (n / 1e6).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' jt' : n >= 1e3 ? Math.round(n / 1e3) + ' rb' : String(Math.round(n));
+function niceMax(m){ if (m <= 0) return 1; const p = Math.pow(10, Math.floor(Math.log10(m))), f = m / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p; }
+function buckets(from, to){
+  const d0 = new Date(from + 'T00:00:00'), d1 = new Date(to + 'T00:00:00'), days = Math.round((d1 - d0) / 864e5) + 1, keys = [], labels = [];
+  if (days <= 45){
+    for (let i = 0; i < days; i++){ const d = new Date(d0); d.setDate(d0.getDate() + i); keys.push(iso(d)); labels.push(d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })); }
+    return { keys, labels, keyOf: s => s };
+  }
+  for (let d = new Date(d0.getFullYear(), d0.getMonth(), 1); d <= d1 && keys.length < 60; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)){ keys.push(iso(d).slice(0, 7)); labels.push(d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' })); }
+  return { keys, labels, keyOf: s => s.slice(0, 7) };
+}
+function lineChart(labels, a, b){
+  const W = 760, H = 300, L = 58, R = 18, T = 14, B = 34, n = labels.length, max = niceMax(Math.max.apply(null, a.concat(b, [0])));
+  const x = i => n === 1 ? L + (W - L - R) / 2 : L + i * (W - L - R) / (n - 1), y = v => T + (H - T - B) * (1 - v / max);
+  chartData = { labels, a, b, W, L, R, n };
+  let g = '';
+  for (let k = 0; k <= 4; k++){ const v = max * k / 4, yy = y(v); g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yy + '" y2="' + yy + '" stroke="#ECECF0" stroke-width="1"/><text x="' + (L - 10) + '" y="' + (yy + 4) + '" text-anchor="end">' + (v ? short(v) : '0') + '</text>'; }
+  const step = Math.ceil(n / 8);
+  labels.forEach((l, i) => { if (i % step === 0) g += '<text x="' + x(i) + '" y="' + (H - 10) + '" text-anchor="middle">' + esc(l) + '</text>'; });
+  const line = (arr, c) => '<polyline fill="none" stroke="' + c + '" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" points="' + arr.map((v, i) => x(i) + ',' + y(v)).join(' ') + '"/>' + (n <= 45 ? arr.map((v, i) => !v ? '' : '<circle cx="' + x(i) + '" cy="' + y(v) + '" r="4" fill="' + c + '" stroke="#fff" stroke-width="2"/>').join('') : '');
+  return '<div class="chart"><svg class="line" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Grafik nilai order dan uang masuk per periode">' + g +
+    '<line id="ch-x" x1="0" x2="0" y1="' + T + '" y2="' + (H - B) + '" stroke="#2B2B31" stroke-width="1" visibility="hidden"/>' + line(a, 'var(--c1)') + line(b, 'var(--c2)') +
+    '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="transparent"/></svg><div id="ch-tip" hidden></div></div>';
+}
+function donut(segs, centerBig, centerSmall){
+  const r = 56, C = 2 * Math.PI * r, total = segs.reduce((s, v) => s + v.n, 0), gap = 4; let acc = 0, arcs = '';
+  segs.forEach(s => { if (!s.n) return; const len = s.n / total * C, d = Math.max(len - (segs.filter(v => v.n).length > 1 ? gap : 0), 1);
+    arcs += '<circle cx="80" cy="80" r="' + r + '" fill="none" stroke="' + s.c + '" stroke-width="15" stroke-linecap="round" stroke-dasharray="' + d + ' ' + (C - d) + '" stroke-dashoffset="' + (-acc - gap / 2) + '" transform="rotate(-90 80 80)"><title>' + s.label + ': ' + s.n + ' order</title></circle>'; acc += len; });
+  return '<svg viewBox="0 0 160 160" role="img" aria-label="Pembagian order menurut status pembayaran"><circle cx="80" cy="80" r="' + r + '" fill="none" stroke="#ECECF0" stroke-width="15"/>' + arcs +
+    '<text class="big" x="80" y="82" text-anchor="middle">' + centerBig + '</text><text class="sm" x="80" y="100" text-anchor="middle">' + centerSmall + '</text></svg>';
+}
 function vRingkasan(C){
   const open = C.orders.filter(o => o.sisa > 0 && o.status !== 'batal').sort((a, b) => (a.jatuhTempo || '9').localeCompare(b.jatuhTempo || '9'));
-  const has = !!(pFrom && pTo), inR = d => d >= pFrom && d <= pTo;
-  const omzet = has ? C.orders.filter(o => o.status !== 'batal' && inR(o.tanggal)).reduce((a, o) => a + o.total, 0) : 0;
-  const masuk = has ? S.payments.filter(p => inR(p.tanggal)).reduce((a, p) => a + p.jumlah, 0) : 0;
-  const val = n => has ? rp(n) : '<span class="muted" style="font:15px var(--body)">Pilih periode dulu</span>';
-  return '<div class="gauges">' + S.products.map(p => gauge(p, C.stok[p.id])).join('') + '</div>' +
-    '<div class="row"><h2>Uang &amp; order per periode</h2><div class="periode"><label class="f">Dari<input type="date" id="per-from" value="' + pFrom + '"></label><label class="f">Sampai<input type="date" id="per-to" value="' + pTo + '"></label><button class="small" data-act="per" data-p="bulan">Bulan ini</button><button class="small" data-act="per" data-p="lalu">Bulan lalu</button><button class="small" data-act="per" data-p="semua">Semua</button></div></div>' +
-    '<div class="figs"><div class="fig"><span class="label">Uang masuk di periode ini</span><span class="v">' + val(masuk) + '</span></div>' +
-    '<div class="fig"><span class="label">Nilai order di periode ini</span><span class="v">' + val(omzet) + '</span></div>' +
-    '<div class="fig"><span class="label">Total sisa tagihan saat ini</span><span class="v">' + rp(C.piutang) + '</span></div></div>' +
-    '<div><h2>Tagihan belum lunas</h2><span class="src">Sumber: daftar yang sama dengan tab Invoice &amp; order status, disaring ke order yang sisanya masih ada. Ubah status, tanggal bayar, atau note di sini maupun di invoice, hasilnya sama.</span></div>' +
-    (open.length ? '<div class="tablebox"><table>' + orderHead + orderRows(open) + '</table></div>' : '<div class="tablebox"><div class="empty">Semua invoice sudah lunas.</div></div>');
+  const has = !!(pFrom && pTo && pFrom <= pTo), inR = d => d >= pFrom && d <= pTo;
+  const aktif = C.orders.filter(o => o.status !== 'batal');
+  const ord = has ? aktif.filter(o => inR(o.tanggal)) : [], pay = has ? S.payments.filter(p => inR(p.tanggal)) : [];
+  const omzet = ord.reduce((a, o) => a + o.total, 0), masuk = pay.reduce((a, p) => a + p.jumlah, 0);
+  let dM = '', dO = '';
+  if (has){
+    const len = Math.round((new Date(pTo + 'T00:00:00') - new Date(pFrom + 'T00:00:00')) / 864e5) + 1, q1 = plusDays(pFrom, -1), q0 = plusDays(pFrom, -len), inP = d => d >= q0 && d <= q1;
+    const pm = S.payments.filter(p => inP(p.tanggal)).reduce((a, p) => a + p.jumlah, 0), po = aktif.filter(o => inP(o.tanggal)).reduce((a, o) => a + o.total, 0);
+    const delta = (now, prev) => prev > 0 ? '<b class="' + (now >= prev ? 'up' : 'down') + '">' + (now >= prev ? '▲ ' : '▼ ') + Math.abs((now - prev) / prev * 100).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + '%</b> dari periode sebelumnya' : 'Belum ada pembanding periode sebelumnya';
+    dM = delta(masuk, pm); dO = delta(omzet, po);
+  }
+  const val = n => has ? rp(n) : '<span class="muted" style="font-size:15px;font-weight:400">Pilih periode dulu</span>';
+  const fig = (cls, icon, v, label, d) => '<div class="fig ' + cls + '"><div class="h"><span class="ic">' + icon + '</span><div style="min-width:0"><div class="v">' + v + '</div><div class="label">' + label + '</div></div></div><div class="d">' + d + '</div></div>';
+  const pick = '<div class="blank">Pilih periode dulu untuk melihat grafik.<div class="periode"><button class="small" data-act="per" data-p="bulan">Bulan ini</button><button class="small" data-act="per" data-p="lalu">Bulan lalu</button><button class="small" data-act="per" data-p="semua">Semua</button></div></div>';
+  let chart = pick, don = pick, top = pick;
+  if (has){
+    const bk = buckets(pFrom, pTo), idx = {}; bk.keys.forEach((k, i) => { idx[k] = i; });
+    const a = bk.keys.map(() => 0), b = bk.keys.map(() => 0);
+    ord.forEach(o => { const i = idx[bk.keyOf(o.tanggal)]; if (i != null) a[i] += o.total; });
+    pay.forEach(p => { const i = idx[bk.keyOf(p.tanggal)]; if (i != null) b[i] += p.jumlah; });
+    chart = (omzet || masuk) ? lineChart(bk.labels, a, b) : '<div class="blank">Belum ada order atau pembayaran di periode ini.</div>';
+    const cnt = { lunas: 0, dp: 0, belum: 0 }; ord.forEach(o => { cnt[o.status] = (cnt[o.status] || 0) + 1; });
+    const segs = [{ label: 'Lunas', n: cnt.lunas, c: 'var(--c3)' }, { label: 'DP', n: cnt.dp, c: 'var(--c1)' }, { label: 'Belum bayar', n: cnt.belum, c: 'var(--c2)' }];
+    don = ord.length ? '<div class="donut">' + donut(segs, Math.round(cnt.lunas / ord.length * 100) + '%', 'lunas') + '<div class="dl">' + segs.map(s => '<div><i style="background:' + s.c + '"></i><span>' + s.label + '</span><strong class="num">' + s.n + ' order</strong></div>').join('') + '</div></div>' : '<div class="blank">Belum ada order di periode ini.</div>';
+    const tp = {}; ord.forEach(o => o.items.forEach(i => { const t = tp[i.productId] || (tp[i.productId] = { nama: i.nama, qty: 0, nilai: 0 }); t.qty += i.qty; t.nilai += lineTotal(i); }));
+    const rows = Object.values(tp).sort((x, y) => y.nilai - x.nilai);
+    top = rows.length ? '<div class="tablebox"><table><tr><th>Produk</th><th class="r">Terjual</th><th class="r">Nilai</th></tr>' + rows.map(t => '<tr><td>' + esc(t.nama) + '</td><td class="r num">' + kg(t.qty) + '</td><td class="r num">' + rp(t.nilai) + '</td></tr>').join('') + '</table></div>' : '<div class="blank">Belum ada penjualan di periode ini.</div>';
+  }
+  return '<div class="filter"><div><span class="label">Periode</span><div style="font-weight:500">' + (has ? tgl(pFrom) + ' sampai ' + tgl(pTo) : 'Belum dipilih') + '</div></div><span class="sp"></span><div class="periode"><label class="f">Dari<input type="date" id="per-from" value="' + pFrom + '"></label><label class="f">Sampai<input type="date" id="per-to" value="' + pTo + '"></label><button class="small" data-act="per" data-p="bulan">Bulan ini</button><button class="small" data-act="per" data-p="lalu">Bulan lalu</button><button class="small" data-act="per" data-p="semua">Semua</button></div></div>' +
+    '<div class="dash"><div class="panel"><h2>Ringkasan</h2>' +
+      fig('a', IC.uang, val(masuk), 'Uang masuk', has ? dM : 'Jumlah pembayaran yang diterima') +
+      fig('b', IC.order, val(omzet), 'Nilai order', has ? ord.length + ' order · ' + dO : 'Total nilai order yang dibuat') +
+      fig('c', IC.tagih, rp(C.piutang), 'Sisa tagihan saat ini', open.length + ' invoice belum lunas') +
+      '<div class="stok"><h2>Stok</h2>' + S.products.map(p => gauge(p, C.stok[p.id])).join('') + '</div></div>' +
+    '<div class="right"><div class="card"><div class="cardhead"><h2>Order &amp; uang masuk</h2><div class="legend"><span><i style="background:var(--c1)"></i>Nilai order</span><span><i style="background:var(--c2)"></i>Uang masuk</span></div></div>' + chart + '</div>' +
+      '<div class="two"><div class="card"><div class="cardhead"><h2>Status pembayaran</h2></div>' + don + '</div><div class="card"><div class="cardhead"><h2>Produk terlaris</h2></div>' + top + '</div></div></div></div>' +
+    '<div class="card"><div class="cardhead"><div><h2>Tagihan belum lunas</h2><span class="src">Daftar yang sama dengan menu Invoice &amp; order, disaring ke order yang masih ada kurangnya.</span></div></div>' +
+    (open.length ? '<div class="tablebox"><table>' + orderHead + orderRows(open) + '</table></div>' : '<div class="blank">Semua invoice sudah lunas.</div>') + '</div>';
 }
+document.addEventListener('pointermove', ev => {
+  const svg = ev.target.closest ? ev.target.closest('svg.line') : null, tip = $('ch-tip'), cx = $('ch-x');
+  if (!svg || !chartData){ if (tip) tip.hidden = true; if (cx) cx.setAttribute('visibility', 'hidden'); return; }
+  const d = chartData, r = svg.getBoundingClientRect(), vx = (ev.clientX - r.left) / r.width * d.W;
+  const i = d.n === 1 ? 0 : Math.max(0, Math.min(d.n - 1, Math.round((vx - d.L) / ((d.W - d.L - d.R) / (d.n - 1)))));
+  const px = d.n === 1 ? d.L + (d.W - d.L - d.R) / 2 : d.L + i * (d.W - d.L - d.R) / (d.n - 1);
+  cx.setAttribute('x1', px); cx.setAttribute('x2', px); cx.setAttribute('visibility', 'visible');
+  tip.innerHTML = '<strong>' + esc(d.labels[i]) + '</strong><br><i style="background:var(--c1)"></i>Nilai order ' + rp(d.a[i]) + '<br><i style="background:var(--c2)"></i>Uang masuk ' + rp(d.b[i]);
+  tip.hidden = false;
+  const left = px / d.W * r.width;
+  if (left > r.width / 2){ tip.style.left = ''; tip.style.right = (r.width - left + 12) + 'px'; } else { tip.style.right = ''; tip.style.left = (left + 12) + 'px'; }
+});
 function vOrder(C){
-  return '<div class="row"><h2>Invoice &amp; order status</h2><span class="muted">' + C.orders.length + ' order</span></div>' +
+  return '<div class="row"><h2>Semua order</h2><span class="muted">' + C.orders.length + ' order</span></div>' +
     (C.orders.length ? '<div class="tablebox"><table>' + orderHead + orderRows(C.orders) + '</table></div>' : '<div class="tablebox"><div class="empty">Belum ada order.<button class="primary" data-act="new-order">+ Order baru</button></div></div>');
 }
 function vStok(C){
