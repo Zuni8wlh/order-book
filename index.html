@@ -86,6 +86,10 @@ tr.click{cursor:pointer} tr.click:hover td{background:var(--bg)}
 select.st{width:auto;min-width:118px;padding:5px 8px;font-size:13px;font-weight:600;border-color:currentColor;background:var(--surface)}
 select.st option{color:var(--ink)}
 .st-lunas{color:var(--good)} .st-dp,.st-cicilan{color:var(--warn)} .st-belum{color:var(--ink)} .st-batal{color:var(--muted)}
+input.paydate{width:auto;font-size:13px;padding:5px 8px}
+.periode{display:flex;flex-wrap:wrap;gap:8px;align-items:end}
+.periode label.f{width:150px}
+.src{font-size:13px;color:var(--muted)}
 input.note{min-width:160px;font-size:13.5px;padding:5px 8px}
 tr.batal td{opacity:.6}
 .empty{padding:28px 18px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:12px;align-items:center}
@@ -269,18 +273,33 @@ function statusSelect(o, pre){
   return '<select id="' + pre + '-st-' + o.id + '" class="st st-' + o.status + '" data-status="' + o.id + '" aria-label="Status pembayaran">' + Object.keys(STATUS).map(k => '<option value="' + k + '"' + (k === o.status ? ' selected' : '') + '>' + STATUS[k] + '</option>').join('') + '</select>';
 }
 function noteInput(o, pre){ return '<input id="' + pre + '-note-' + o.id + '" class="note" data-note="' + o.id + '" value="' + esc(o.catatan || '') + '" placeholder="Tulis note" aria-label="Note" autocomplete="off">'; }
-function orderRows(list){
-  return list.map(o => '<tr class="click' + (o.status === 'batal' ? ' batal' : '') + '" data-act="open-order" data-id="' + o.id + '" tabindex="0"><td style="white-space:nowrap"><span class="num">' + esc(o.no) + '</span><br><button class="small primary" style="margin-top:6px" data-act="open-order" data-id="' + o.id + '">Buka invoice</button></td><td>' + esc(o.customerName) + '<br><span class="muted">' + o.items.map(i => esc(i.nama) + ' ' + kg(i.qty)).join(', ') + '</span></td><td>' + tgl(o.tanggal) + '<br><span class="muted">tempo ' + tgl(o.jatuhTempo) + '</span>' + (o.telat ? '<br><span style="color:var(--crit)">lewat jatuh tempo</span>' : '') + '</td><td class="r num">' + rp(o.total) + '</td><td class="r num">' + rp(o.dibayar) + '</td><td class="r num">' + rp(o.status === 'batal' ? 0 : Math.max(o.sisa, 0)) + '</td><td>' + statusSelect(o, 't') + '</td><td>' + noteInput(o, 't') + '</td></tr>').join('');
+function payDates(o){
+  const ps = S.payments.filter(p => p.orderId === o.id).sort((a, b) => a.tanggal.localeCompare(b.tanggal));
+  if (!ps.length) return '<span class="muted">Belum ada</span>';
+  const last = ps[ps.length - 1];
+  return ps.slice(0, -1).map(p => '<span class="muted">' + tgl(p.tanggal) + ' · ' + esc(p.jenis) + '</span><br>').join('') +
+    '<input type="date" class="paydate" id="t-pd-' + last.id + '" data-paydate="' + last.id + '" value="' + esc(last.tanggal) + '" aria-label="Tanggal pembayaran terakhir"><br><span class="muted">' + esc(last.jenis) + ' · ' + rp(last.jumlah) + '</span>';
 }
-const orderHead = '<tr><th>No. invoice</th><th>Customer / barang</th><th>Tanggal</th><th class="r">Total</th><th class="r">Dibayar</th><th class="r">Sisa</th><th>Status pembayaran</th><th>Note</th></tr>';
+function orderRows(list){
+  return list.map(o => '<tr class="click' + (o.status === 'batal' ? ' batal' : '') + '" data-act="open-order" data-id="' + o.id + '" tabindex="0"><td style="white-space:nowrap"><span class="num">' + esc(o.no) + '</span><br><button class="small primary" style="margin-top:6px" data-act="open-order" data-id="' + o.id + '">Buka invoice</button></td><td>' + esc(o.customerName) + '<br><span class="muted">' + o.items.map(i => esc(i.nama) + ' ' + kg(i.qty)).join(', ') + '</span></td><td>' + tgl(o.tanggal) + '<br><span class="muted">tempo ' + tgl(o.jatuhTempo) + '</span>' + (o.telat ? '<br><span style="color:var(--crit)">lewat jatuh tempo</span>' : '') + '</td><td class="r num">' + rp(o.total) + '</td><td class="r num">' + rp(o.dibayar) + '</td><td class="r num">' + rp(o.status === 'batal' ? 0 : Math.max(o.sisa, 0)) + '</td><td>' + statusSelect(o, 't') + '</td><td>' + payDates(o) + '</td><td>' + noteInput(o, 't') + '</td></tr>').join('');
+}
+const orderHead = '<tr><th>No. invoice</th><th>Customer / barang</th><th>Tanggal</th><th class="r">Total</th><th class="r">Dibayar</th><th class="r">Sisa</th><th>Status pembayaran</th><th>Tanggal bayar</th><th>Note</th></tr>';
 
+let pFrom = '', pTo = '';
+try { const s = JSON.parse(localStorage.getItem('periode') || '{}'); pFrom = s.f || ''; pTo = s.t || ''; } catch (e) {}
+function setPeriode(f, t){ pFrom = f || ''; pTo = t || ''; try { localStorage.setItem('periode', JSON.stringify({ f: pFrom, t: pTo })); } catch (e) {} render(); }
 function vRingkasan(C){
   const open = C.orders.filter(o => o.sisa > 0 && o.status !== 'batal').sort((a, b) => (a.jatuhTempo || '9').localeCompare(b.jatuhTempo || '9'));
+  const has = !!(pFrom && pTo), inR = d => d >= pFrom && d <= pTo;
+  const omzet = has ? C.orders.filter(o => o.status !== 'batal' && inR(o.tanggal)).reduce((a, o) => a + o.total, 0) : 0;
+  const masuk = has ? S.payments.filter(p => inR(p.tanggal)).reduce((a, p) => a + p.jumlah, 0) : 0;
+  const val = n => has ? rp(n) : '<span class="muted" style="font:15px var(--body)">Pilih periode dulu</span>';
   return '<div class="gauges">' + S.products.map(p => gauge(p, C.stok[p.id])).join('') + '</div>' +
-    '<div class="figs"><div class="fig"><span class="label">Sisa tagihan (piutang)</span><span class="v">' + rp(C.piutang) + '</span></div>' +
-    '<div class="fig"><span class="label">Nilai order bulan ini</span><span class="v">' + rp(C.omzet) + '</span></div>' +
-    '<div class="fig"><span class="label">Uang masuk bulan ini</span><span class="v">' + rp(C.masuk) + '</span></div></div>' +
-    '<h2>Tagihan belum lunas</h2>' +
+    '<div class="row"><h2>Uang &amp; order per periode</h2><div class="periode"><label class="f">Dari<input type="date" id="per-from" value="' + pFrom + '"></label><label class="f">Sampai<input type="date" id="per-to" value="' + pTo + '"></label><button class="small" data-act="per" data-p="bulan">Bulan ini</button><button class="small" data-act="per" data-p="lalu">Bulan lalu</button><button class="small" data-act="per" data-p="semua">Semua</button></div></div>' +
+    '<div class="figs"><div class="fig"><span class="label">Uang masuk di periode ini</span><span class="v">' + val(masuk) + '</span></div>' +
+    '<div class="fig"><span class="label">Nilai order di periode ini</span><span class="v">' + val(omzet) + '</span></div>' +
+    '<div class="fig"><span class="label">Total sisa tagihan saat ini</span><span class="v">' + rp(C.piutang) + '</span></div></div>' +
+    '<div><h2>Tagihan belum lunas</h2><span class="src">Sumber: daftar yang sama dengan tab Invoice &amp; order status, disaring ke order yang sisanya masih ada. Ubah status, tanggal bayar, atau note di sini maupun di invoice, hasilnya sama.</span></div>' +
     (open.length ? '<div class="tablebox"><table>' + orderHead + orderRows(open) + '</table></div>' : '<div class="tablebox"><div class="empty">Semua invoice sudah lunas.</div></div>');
 }
 function vOrder(C){
@@ -288,9 +307,9 @@ function vOrder(C){
     (C.orders.length ? '<div class="tablebox"><table>' + orderHead + orderRows(C.orders) + '</table></div>' : '<div class="tablebox"><div class="empty">Belum ada order.<button class="primary" data-act="new-order">+ Order baru</button></div></div>');
 }
 function vStok(C){
-  const mut = S.stockin.map(s => ({ t: s.tanggal, p: s.productId, q: s.qty, k: s.catatan || 'Barang masuk', id: s.id }))
-    .concat(S.orders.filter(o => o.status !== 'batal').flatMap(o => o.items.map(i => ({ t: o.tanggal, p: i.productId, q: -i.qty, k: (o.no || '') + ' · ' + o.customerName }))))
-    .sort((a, b) => b.t.localeCompare(a.t));
+  const mut = S.stockin.map(s => ({ t: s.tanggal, p: s.productId, q: s.qty, k: s.catatan || 'Barang masuk', id: s.id, s: 0, c: 0 }))
+    .concat(S.orders.filter(o => o.status !== 'batal').flatMap(o => o.items.map(i => ({ t: o.tanggal, p: i.productId, q: -i.qty, k: (o.no || '') + ' · ' + o.customerName, s: 1, c: o.createdAt || 0 }))))
+    .sort((a, b) => b.t.localeCompare(a.t) || b.s - a.s || b.c - a.c);
   const name = id => (S.products.find(p => p.id === id) || {}).nama || '?';
   return '<div class="row"><h2>Stok &amp; harga</h2><div class="actions"><button data-act="new-product">+ Produk</button><button data-act="stock-in">+ Barang masuk</button><button data-act="toko">Data toko di invoice</button></div></div>' +
     '<div class="tablebox"><table><tr><th>Produk</th><th class="r">Harga / kg</th><th class="r">Masuk</th><th class="r">Terjual</th><th class="r">Sisa stok</th><th class="r">Batas min.</th><th></th></tr>' +
@@ -441,7 +460,9 @@ async function setNote(id, text){
 }
 document.addEventListener('change', ev => {
   const t = ev.target;
-  if (t.dataset && t.dataset.status) setStatus(t.dataset.status, t.value).catch(fail);
+  if (t.id === 'per-from' || t.id === 'per-to') setPeriode($('per-from').value, $('per-to').value);
+  else if (t.dataset && t.dataset.paydate) { if (t.value) put('payments', { tanggal: t.value }, t.dataset.paydate).then(() => toast('Tanggal bayar diperbarui.')).catch(fail); }
+  else if (t.dataset && t.dataset.status) setStatus(t.dataset.status, t.value).catch(fail);
   else if (t.dataset && t.dataset.note) setNote(t.dataset.note, t.value.trim()).catch(fail);
 });
 document.addEventListener('focusout', ev => {
@@ -460,6 +481,12 @@ document.addEventListener('click', async ev => {
   armed = null;
   try {
     if (act === 'close') closeDlg();
+    else if (act === 'per') {
+      const n = new Date(), p = el.dataset.p;
+      if (p === 'bulan') setPeriode(iso(new Date(n.getFullYear(), n.getMonth(), 1)), iso(new Date(n.getFullYear(), n.getMonth() + 1, 0)));
+      else if (p === 'lalu') setPeriode(iso(new Date(n.getFullYear(), n.getMonth() - 1, 1)), iso(new Date(n.getFullYear(), n.getMonth(), 0)));
+      else { const all = S.orders.map(o => o.tanggal).concat(S.payments.map(x => x.tanggal)).sort(); setPeriode(all[0] || today(), all.length && all[all.length - 1] > today() ? all[all.length - 1] : today()); }
+    }
     else if (act === 'logout') { await sb.auth.signOut(); location.reload(); }
     else if (act === 'new-order') S.products.length ? orderForm() : productForm();
     else if (act === 'new-product') productForm();
