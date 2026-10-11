@@ -187,7 +187,7 @@ input,select,textarea{font:14.5px var(--body);color:var(--ink);background:#F4F4F
   </aside>
   <div class="content">
     <header class="top">
-      <div class="brand"><h1 id="page-title">Selamat datang</h1><span class="muted" id="sub">Order, uang masuk, dan stok.</span></div>
+      <div class="brand"><h1 id="page-title">Selamat datang</h1><span class="muted" id="sub">Order, uang masuk, dan stok</span></div>
       <button class="primary" data-act="new-order" id="btn-new-order">+ Order baru</button>
     </header>
     <main id="view" class="section"><div class="card"><div class="empty">Memuat data…</div></div></main>
@@ -203,7 +203,7 @@ input,select,textarea{font:14.5px var(--body);color:var(--ink);background:#F4F4F
 /* ====== BAHASA: teks ditulis dalam bahasa Indonesia, lalu diterjemahkan di layar saat EN dipilih ====== */
 const LANG = (() => { try { return localStorage.getItem('lang') === 'en' ? 'en' : 'id'; } catch (e) { return 'id'; } })();
 const DLOC = LANG === 'en' ? 'en-GB' : 'id-ID';
-const EN = {"Masuk untuk membuka data order dan stok.": "Sign in to open order and stock data.","Masuk": "Sign in","Bahasa": "Language","Keluar": "Sign out","Selamat datang": "Welcome","Order, uang masuk, dan stok.": "Orders, cash in, and stock.","+ Order baru": "+ New order","Memuat data…": "Loading data…","Email atau password salah.": "Wrong email or password.","Belum ada produk": "No products yet","Mulai dari produk dan stok awalnya. Setelah itu setiap order otomatis memotong stok dan membuat invoice.": "Start with a product and its opening stock. After that, every order deducts stock and creates an invoice automatically.","+ Tambah produk": "+ Add product","Produk baru": "New product","Ubah produk": "Edit product","Nama produk": "Product name","mis. Pistachio Roasted": "e.g. Roasted Pistachio","Harga jual / kg": "Selling price / kg","Batas stok minimum (kg)": "Minimum stock level (kg)","Stok awal (kg)": "Opening stock (kg)","Batal": "Cancel","Simpan": "Save","Perubahan harga hanya berlaku untuk order berikutnya. Invoice lama tetap memakai harga saat order dibuat.": "Price changes apply to new orders only. Existing invoices keep the price from when the order was made.","Periode": "Period","Belum dipilih": "Not selected","Dari": "From","Sampai": "To","Bulan ini": "This month","Bulan lalu": "Last month","Semua": "All","Ringkasan": "Overview","Pilih periode dulu": "Select a period first","Uang masuk": "Cash in","Jumlah pembayaran yang diterima": "Total payments received","Nilai order": "Order value","Total nilai order yang dibuat": "Total value of orders created","Sisa tagihan saat ini": "Outstanding balance now","Stok": "Stock","kg tersisa": "kg left","Batas minimum": "Minimum level","Stok habis": "Out of stock","Order & uang masuk": "Orders & cash in","Pilih periode dulu untuk melihat grafik.": "Select a period to see the chart.","Status pembayaran": "Payment status","Produk terlaris": "Top products","Tagihan belum lunas": "Unpaid invoices","Daftar yang sama dengan menu Invoice & order, disaring ke order yang masih ada kurangnya.": "Same list as the Invoice & order menu, filtered to orders with a remaining balance.","Semua invoice sudah lunas.": "All invoices are paid.","Produk tersimpan.": "Product saved.","Sisa stok per kg, harga jual, dan riwayat keluar masuk.": "Stock on hand per kg, selling prices, and stock movements.","Stok & harga per produk": "Stock & price per product","+ Produk": "+ Product","+ Barang masuk": "+ Stock in","Data toko di invoice": "Business details on invoice","Produk": "Product","Harga / kg": "Price / kg","Terjual": "Sold","Sisa stok": "Stock left","Batas min.": "Min. level","Ubah": "Edit","Riwayat keluar masuk": "Stock movements","Tanggal": "Date","Keterangan": "Description","Jumlah": "Amount","Stok awal": "Opening stock","Hapus": "Delete","Order baru": "New order","Nama customer": "Customer name","Tanggal order": "Order date","Jatuh tempo": "Due date","Qty (kg)": "Qty (kg)","Hapus baris": "Remove row","+ Tambah barang": "+ Add item","DP diterima sekarang (boleh kosong)": "Down payment received now (optional)","Cara bayar": "Payment method","Tunai": "Cash","Opsional": "Optional","Total order": "Order total","Simpan order": "Save order","Invoice & order status": "Invoice & order status","Status pembayaran, riwayat bayar, dan invoice tiap order.": "Payment status, payment history, and invoice for each order.","Semua order": "All orders","Saring menurut status": "Filter by status","Belum bayar": "Unpaid","Lunas": "Paid","No. invoice": "Invoice no.","Customer / barang": "Customer / items","Sudah dibayar": "Amount paid","Kurang": "Balance","Buka invoice": "Open invoice","Buka riwayat bayar": "Show payment history","Tutup riwayat bayar": "Hide payment history","Riwayat bayar": "Payment history","Tulis note": "Add a note","Barang": "Item","Sisa tagihan": "Balance due","Pembayaran": "Payments","Catat pembayaran": "Record payment","Hapus order": "Delete order","Tutup": "Close","Kepada:": "Bill to:","BARANG": "ITEM","HARGA / KG": "PRICE / KG","JUMLAH": "AMOUNT","Note tersimpan.": "Note saved.","Tidak ada order dengan status ini.": "No orders with this status.","Riwayat pembayaran": "Payment history","Tanggal bayar": "Payment date","Nominal pembayaran": "Payment amount","Hapus pembayaran": "Delete payment","Tanggal pembayaran baru": "New payment date","Nominal": "Amount","Nominal pembayaran baru": "New payment amount","+ Tambah pembayaran": "+ Add payment","· Kurang": "· Balance","Masih ada pembayaran tercatat. Isi 0 di kolom Sudah dibayar kalau memang belum bayar.": "Payments are still recorded. Enter 0 in the Amount paid column if nothing has been paid.","Belum ada pembayaran": "No payments yet","Belum ada pembayaran.": "No payments yet.","Isi nominal DP yang sudah diterima.": "Enter the down payment amount received.","Pelunasan": "Final payment","Order dibatalkan. Stok dikembalikan.": "Order cancelled. Stock returned.","Order dihapus. Stok dikembalikan.": "Order deleted. Stock returned.","Pelunasan dihapus, tersisa pembayaran DP.": "Final payment removed, down payment kept.","Tanggal bayar diperbarui.": "Payment date updated.","Belum ada pembanding periode sebelumnya": "No previous period to compare","dari periode sebelumnya": "vs previous period","Grafik nilai order dan uang masuk per periode": "Chart of order value and cash in for the period","Belum ada order di periode ini.": "No orders in this period.","Belum ada penjualan di periode ini.": "No sales in this period.","Belum ada order atau pembayaran di periode ini.": "No orders or payments in this period.","Pembagian order menurut status pembayaran": "Orders by payment status","lunas": "paid","Nilai": "Value","Barang masuk": "Stock in","Jumlah (kg)": "Quantity (kg)","mis. Kiriman supplier": "e.g. Supplier delivery","Stok bertambah.": "Stock added.","Daftar customer dan sisa tagihannya.": "Customers and their outstanding balances.","Nama": "Name","Kontak": "Contact","Jumlah order": "Orders","Total belanja": "Total spend","Customer tersimpan.": "Customer saved.","Data contoh dihapus.": "Sample data deleted.","Data toko tersimpan.": "Business details saved.","Gagal menyimpan. Coba sekali lagi.": "Could not save. Please try again.","Isi nominalnya dulu.": "Enter the amount first.","Library PDF gagal dimuat. Cek koneksi internet lalu muat ulang.": "The PDF library failed to load. Check the connection and reload.","Pembayaran tercatat masih sama dengan total. Ubah nominalnya di kolom Sudah dibayar.": "Recorded payments still equal the total. Change the amount in the Amount paid column.","Isi minimal satu barang dengan qty lebih dari 0.": "Add at least one item with a quantity above 0.","Supabase belum dihubungkan. Isi SUPABASE_URL dan SUPABASE_ANON_KEY di file index.html.": "Supabase is not connected. Fill in SUPABASE_URL and SUPABASE_ANON_KEY in index.html.","Library Supabase gagal dimuat. Cek koneksi internet lalu muat ulang.": "The Supabase library failed to load. Check the connection and reload.","Hapus?": "Delete?","Yakin?": "Sure?","Klik lagi: order dan pembayarannya dihapus": "Click again: deletes the order and its payments","Belum ada barang masuk.": "No stock in yet.","Belum ada order.": "No orders yet.","Customer otomatis tercatat saat order pertamanya dibuat.": "Customers are added automatically when their first order is created.","Alamat dan kontak": "Address and contact","Info pembayaran (bank, nama rekening)": "Payment details (bank, account name)","Nama toko / usaha": "Business name","Pastikan schema.sql sudah dijalankan di Supabase.": "Make sure schema.sql has been run in Supabase.","Lewat jatuh tempo": "Overdue","lewat jatuh tempo": "overdue","Ubah customer": "Edit customer","No. WhatsApp": "WhatsApp number","Sisa tagihan (piutang)": "Outstanding balance"};
+const EN = {"Masuk untuk membuka data order dan stok": "Sign in to open order and stock data", "Masuk": "Sign in", "Bahasa": "Language", "Keluar": "Sign out", "Selamat datang": "Welcome", "Order, uang masuk, dan stok": "Orders, cash in, and stock", "+ Order baru": "+ New order", "Memuat data…": "Loading data…", "Email atau password salah": "Wrong email or password", "Belum ada produk": "No products yet", "Mulai dari produk dan stok awalnya. Setelah itu setiap order otomatis memotong stok dan membuat invoice.": "Start with a product and its opening stock. After that, every order deducts stock and creates an invoice automatically.", "+ Tambah produk": "+ Add product", "Produk baru": "New product", "Ubah produk": "Edit product", "Nama produk": "Product name", "mis. Pistachio Roasted": "e.g. Roasted Pistachio", "Harga jual / kg": "Selling price / kg", "Batas stok minimum (kg)": "Minimum stock level (kg)", "Stok awal (kg)": "Opening stock (kg)", "Batal": "Cancel", "Simpan": "Save", "Perubahan harga hanya berlaku untuk order berikutnya. Invoice lama tetap memakai harga saat order dibuat.": "Price changes apply to new orders only. Existing invoices keep the price from when the order was made.", "Periode": "Period", "Belum dipilih": "Not selected", "Dari": "From", "Sampai": "To", "Bulan ini": "This month", "Bulan lalu": "Last month", "Semua": "All", "Ringkasan": "Overview", "Pilih periode dulu": "Select a period first", "Uang masuk": "Cash in", "Jumlah pembayaran yang diterima": "Total payments received", "Nilai order": "Order value", "Total nilai order yang dibuat": "Total value of orders created", "Sisa tagihan saat ini": "Outstanding balance now", "Stok": "Stock", "kg tersisa": "kg left", "Batas minimum": "Minimum level", "Stok habis": "Out of stock", "Order & uang masuk": "Orders & cash in", "Pilih periode dulu untuk melihat grafik": "Select a period to see the chart", "Status pembayaran": "Payment status", "Produk terlaris": "Top products", "Tagihan belum lunas": "Unpaid invoices", "Daftar yang sama dengan menu Invoice & order, disaring ke order yang masih ada kurangnya": "Same list as the Invoice & order menu, filtered to orders with a remaining balance", "Semua invoice sudah lunas": "All invoices are paid", "Produk tersimpan": "Product saved", "Sisa stok per kg, harga jual, dan riwayat keluar masuk": "Stock on hand per kg, selling prices, and stock movements", "Stok & harga per produk": "Stock & price per product", "+ Produk": "+ Product", "+ Barang masuk": "+ Stock in", "Data toko di invoice": "Business details on invoice", "Produk": "Product", "Harga / kg": "Price / kg", "Terjual": "Sold", "Sisa stok": "Stock left", "Batas min.": "Min. level", "Ubah": "Edit", "Riwayat keluar masuk": "Stock movements", "Tanggal": "Date", "Keterangan": "Description", "Jumlah": "Amount", "Stok awal": "Opening stock", "Hapus": "Delete", "Order baru": "New order", "Nama customer": "Customer name", "Tanggal order": "Order date", "Jatuh tempo": "Due date", "Qty (kg)": "Qty (kg)", "Hapus baris": "Remove row", "+ Tambah barang": "+ Add item", "DP diterima sekarang (boleh kosong)": "Down payment received now (optional)", "Cara bayar": "Payment method", "Tunai": "Cash", "Opsional": "Optional", "Total order": "Order total", "Simpan order": "Save order", "Invoice & order status": "Invoice & order status", "Status pembayaran, riwayat bayar, dan invoice tiap order": "Payment status, payment history, and invoice for each order", "Semua order": "All orders", "Saring menurut status": "Filter by status", "Belum bayar": "Unpaid", "Lunas": "Paid", "No. invoice": "Invoice no.", "Customer / barang": "Customer / items", "Sudah dibayar": "Amount paid", "Kurang": "Balance", "Buka invoice": "Open invoice", "Buka riwayat bayar": "Show payment history", "Tutup riwayat bayar": "Hide payment history", "Riwayat bayar": "Payment history", "Tulis note": "Add a note", "Barang": "Item", "Sisa tagihan": "Balance due", "Pembayaran": "Payments", "Catat pembayaran": "Record payment", "Hapus order": "Delete order", "Tutup": "Close", "Kepada:": "Bill to:", "BARANG": "ITEM", "HARGA / KG": "PRICE / KG", "JUMLAH": "AMOUNT", "Note tersimpan": "Note saved", "Tidak ada order dengan status ini": "No orders with this status", "Riwayat pembayaran": "Payment history", "Tanggal bayar": "Payment date", "Nominal pembayaran": "Payment amount", "Hapus pembayaran": "Delete payment", "Tanggal pembayaran baru": "New payment date", "Nominal": "Amount", "Nominal pembayaran baru": "New payment amount", "+ Tambah pembayaran": "+ Add payment", "· Kurang": "· Balance", "Masih ada pembayaran tercatat. Isi 0 di kolom Sudah dibayar kalau memang belum bayar.": "Payments are still recorded. Enter 0 in the Amount paid column if nothing has been paid.", "Belum ada pembayaran": "No payments yet", "Isi nominal DP yang sudah diterima": "Enter the down payment amount received", "Pelunasan": "Final payment", "Order dibatalkan. Stok dikembalikan.": "Order cancelled. Stock returned.", "Order dihapus. Stok dikembalikan.": "Order deleted. Stock returned.", "Pelunasan dihapus, tersisa pembayaran DP": "Final payment removed, down payment kept", "Tanggal bayar diperbarui": "Payment date updated", "Belum ada pembanding periode sebelumnya": "No previous period to compare", "dari periode sebelumnya": "vs previous period", "Grafik nilai order dan uang masuk per periode": "Chart of order value and cash in for the period", "Belum ada order di periode ini": "No orders in this period", "Belum ada penjualan di periode ini": "No sales in this period", "Belum ada order atau pembayaran di periode ini": "No orders or payments in this period", "Pembagian order menurut status pembayaran": "Orders by payment status", "lunas": "paid", "Nilai": "Value", "Barang masuk": "Stock in", "Jumlah (kg)": "Quantity (kg)", "mis. Kiriman supplier": "e.g. Supplier delivery", "Stok bertambah": "Stock added", "Daftar customer dan sisa tagihannya": "Customers and their outstanding balances", "Nama": "Name", "Kontak": "Contact", "Jumlah order": "Orders", "Total belanja": "Total spend", "Customer tersimpan": "Customer saved", "Data contoh dihapus": "Sample data deleted", "Data toko tersimpan": "Business details saved", "Gagal menyimpan. Coba sekali lagi.": "Could not save. Please try again.", "Isi nominalnya dulu": "Enter the amount first", "Library PDF gagal dimuat. Cek koneksi internet lalu muat ulang.": "The PDF library failed to load. Check the connection and reload.", "Pembayaran tercatat masih sama dengan total. Ubah nominalnya di kolom Sudah dibayar.": "Recorded payments still equal the total. Change the amount in the Amount paid column.", "Isi minimal satu barang dengan qty lebih dari 0": "Add at least one item with a quantity above 0", "Supabase belum dihubungkan. Isi SUPABASE_URL dan SUPABASE_ANON_KEY di file index.html.": "Supabase is not connected. Fill in SUPABASE_URL and SUPABASE_ANON_KEY in index.html.", "Library Supabase gagal dimuat. Cek koneksi internet lalu muat ulang.": "The Supabase library failed to load. Check the connection and reload.", "Hapus?": "Delete?", "Yakin?": "Sure?", "Klik lagi: order dan pembayarannya dihapus": "Click again: deletes the order and its payments", "Belum ada barang masuk": "No stock in yet", "Belum ada order": "No orders yet", "Customer otomatis tercatat saat order pertamanya dibuat": "Customers are added automatically when their first order is created", "Alamat dan kontak": "Address and contact", "Info pembayaran (bank, nama rekening)": "Payment details (bank, account name)", "Nama toko / usaha": "Business name", "Pastikan schema.sql sudah dijalankan di Supabase": "Make sure schema.sql has been run in Supabase", "Lewat jatuh tempo": "Overdue", "lewat jatuh tempo": "overdue", "Ubah customer": "Edit customer", "No. WhatsApp": "WhatsApp number", "Sisa tagihan (piutang)": "Outstanding balance"};
 const EN_RX = [
   [/^(\d+) invoice belum lunas$/, (m, n) => n + (n === '1' ? ' unpaid invoice' : ' unpaid invoices')],
   [/^(\d+) order$/, (m, n) => n + (n === '1' ? ' order' : ' orders')],
@@ -218,9 +218,9 @@ const EN_RX = [
   [/^Jatuh tempo (\d.+)$/, 'Due $1'],
   [/^(\d{1,2} \S+ \d{4}) sampai (\d{1,2} \S+ \d{4})$/, '$1 to $2'],
   [/^Order (\S+) tersimpan\. Stok dan tagihan sudah diperbarui\.$/, 'Order $1 saved. Stock and balance updated.'],
-  [/^Invoice (\S+) diunduh\.$/, 'Invoice $1 downloaded.'],
-  [/^Sudah dibayar (Rp [\d.]+), kurang (Rp [\d.]+)\.$/, 'Paid $1, balance $2.'],
-  [/^Pembayaran (Rp [\d.]+) tercatat\.$/, 'Payment of $1 recorded.'],
+  [/^Invoice (\S+) diunduh$/, 'Invoice $1 downloaded'],
+  [/^Sudah dibayar (Rp [\d.]+), kurang (Rp [\d.]+)$/, 'Paid $1, balance $2'],
+  [/^Pembayaran (Rp [\d.]+) tercatat$/, 'Payment of $1 recorded'],
   [/^Lunas\. Sisa (Rp [\d.]+) dicatat sebagai pembayaran hari ini\.$/, 'Paid in full. The remaining $1 was recorded as today’s payment.'],
   [/^Nilai order (Rp .+)$/, 'Order value $1'],
   [/^Uang masuk (Rp .+)$/, 'Cash in $1'],
@@ -352,7 +352,7 @@ function render(){
   document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tab));
   $('btn-new-order').hidden = tab === 'stok' || tab === 'customer';
   $('page-title').textContent = { ringkasan: 'Selamat datang', order: 'Invoice & order status', stok: 'Inventory', customer: 'Customer' }[tab];
-  $('sub').textContent = { ringkasan: 'Order, uang masuk, dan stok.', order: 'Status pembayaran, riwayat bayar, dan invoice tiap order.', stok: 'Sisa stok per kg, harga jual, dan riwayat keluar masuk.', customer: 'Daftar customer dan sisa tagihannya.' }[tab];
+  $('sub').textContent = { ringkasan: 'Order, uang masuk, dan stok', order: 'Status pembayaran, riwayat bayar, dan invoice tiap order', stok: 'Sisa stok per kg, harga jual, dan riwayat keluar masuk', customer: 'Daftar customer dan sisa tagihannya' }[tab];
   if (!ready) return;
 
   const C = calc(S, today());
@@ -450,20 +450,20 @@ function vRingkasan(C){
   }
   const val = n => has ? rp(n) : '<span class="muted" style="font-size:15px;font-weight:400">Pilih periode dulu</span>';
   const fig = (cls, icon, v, label, d) => '<div class="fig ' + cls + '"><div class="h"><span class="ic">' + icon + '</span><div style="min-width:0"><div class="v">' + v + '</div><div class="label">' + label + '</div></div></div><div class="d">' + d + '</div></div>';
-  const pick = '<div class="blank">Pilih periode dulu untuk melihat grafik.<div class="periode"><button class="small" data-act="per" data-p="bulan">Bulan ini</button><button class="small" data-act="per" data-p="lalu">Bulan lalu</button><button class="small" data-act="per" data-p="semua">Semua</button></div></div>';
+  const pick = '<div class="blank">Pilih periode dulu untuk melihat grafik<div class="periode"><button class="small" data-act="per" data-p="bulan">Bulan ini</button><button class="small" data-act="per" data-p="lalu">Bulan lalu</button><button class="small" data-act="per" data-p="semua">Semua</button></div></div>';
   let chart = pick, don = pick, top = pick;
   if (has){
     const bk = buckets(pFrom, pTo), idx = {}; bk.keys.forEach((k, i) => { idx[k] = i; });
     const a = bk.keys.map(() => 0), b = bk.keys.map(() => 0);
     ord.forEach(o => { const i = idx[bk.keyOf(o.tanggal)]; if (i != null) a[i] += o.total; });
     pay.forEach(p => { const i = idx[bk.keyOf(p.tanggal)]; if (i != null) b[i] += p.jumlah; });
-    chart = (omzet || masuk) ? lineChart(bk.labels, a, b) : '<div class="blank">Belum ada order atau pembayaran di periode ini.</div>';
+    chart = (omzet || masuk) ? lineChart(bk.labels, a, b) : '<div class="blank">Belum ada order atau pembayaran di periode ini</div>';
     const cnt = { lunas: 0, dp: 0, belum: 0 }; ord.forEach(o => { cnt[o.status] = (cnt[o.status] || 0) + 1; });
     const segs = [{ label: 'Lunas', n: cnt.lunas, c: 'var(--c3)' }, { label: 'DP', n: cnt.dp, c: 'var(--c1)' }, { label: 'Belum bayar', n: cnt.belum, c: 'var(--c2)' }];
-    don = ord.length ? '<div class="donut">' + donut(segs, Math.round(cnt.lunas / ord.length * 100) + '%', 'lunas') + '<div class="dl">' + segs.map(s => '<div><i style="background:' + s.c + '"></i><span>' + s.label + '</span><strong class="num">' + s.n + ' order</strong></div>').join('') + '</div></div>' : '<div class="blank">Belum ada order di periode ini.</div>';
+    don = ord.length ? '<div class="donut">' + donut(segs, Math.round(cnt.lunas / ord.length * 100) + '%', 'lunas') + '<div class="dl">' + segs.map(s => '<div><i style="background:' + s.c + '"></i><span>' + s.label + '</span><strong class="num">' + s.n + ' order</strong></div>').join('') + '</div></div>' : '<div class="blank">Belum ada order di periode ini</div>';
     const tp = {}; ord.forEach(o => o.items.forEach(i => { const t = tp[i.productId] || (tp[i.productId] = { nama: i.nama, qty: 0, nilai: 0 }); t.qty += i.qty; t.nilai += lineTotal(i); }));
     const rows = Object.values(tp).sort((x, y) => y.nilai - x.nilai);
-    top = rows.length ? '<div class="tablebox"><table><tr><th>Produk</th><th class="r">Terjual</th><th class="r">Nilai</th></tr>' + rows.map(t => '<tr><td>' + esc(t.nama) + '</td><td class="r num">' + kg(t.qty) + '</td><td class="r num">' + rp(t.nilai) + '</td></tr>').join('') + '</table></div>' : '<div class="blank">Belum ada penjualan di periode ini.</div>';
+    top = rows.length ? '<div class="tablebox"><table><tr><th>Produk</th><th class="r">Terjual</th><th class="r">Nilai</th></tr>' + rows.map(t => '<tr><td>' + esc(t.nama) + '</td><td class="r num">' + kg(t.qty) + '</td><td class="r num">' + rp(t.nilai) + '</td></tr>').join('') + '</table></div>' : '<div class="blank">Belum ada penjualan di periode ini</div>';
   }
   return '<div class="filter"><div><span class="label">Periode</span><div style="font-weight:500">' + (has ? tgl(pFrom) + ' sampai ' + tgl(pTo) : 'Belum dipilih') + '</div></div><span class="sp"></span><div class="periode"><label class="f">Dari<input type="date" id="per-from" value="' + pFrom + '"></label><label class="f">Sampai<input type="date" id="per-to" value="' + pTo + '"></label><button class="small" data-act="per" data-p="bulan">Bulan ini</button><button class="small" data-act="per" data-p="lalu">Bulan lalu</button><button class="small" data-act="per" data-p="semua">Semua</button></div></div>' +
     '<div class="dash"><div class="panel"><h2>Ringkasan</h2>' +
@@ -474,7 +474,7 @@ function vRingkasan(C){
     '<div class="right"><div class="card"><div class="cardhead"><h2>Order &amp; uang masuk</h2><div class="legend"><span><i style="background:var(--c1)"></i>Nilai order</span><span><i style="background:var(--c2)"></i>Uang masuk</span></div></div>' + chart + '</div>' +
       '<div class="two"><div class="card"><div class="cardhead"><h2>Status pembayaran</h2></div>' + don + '</div><div class="card"><div class="cardhead"><h2>Produk terlaris</h2></div>' + top + '</div></div></div></div>' +
     '<div class="card"><div class="cardhead"><h2>Tagihan belum lunas</h2></div>' +
-    (open.length ? '<div class="tablebox"><table>' + orderHead + orderRows(open) + '</table></div>' : '<div class="blank">Semua invoice sudah lunas.</div>') + '</div>';
+    (open.length ? '<div class="tablebox"><table>' + orderHead + orderRows(open) + '</table></div>' : '<div class="blank">Semua invoice sudah lunas</div>') + '</div>';
 }
 document.addEventListener('pointermove', ev => {
   const svg = ev.target.closest ? ev.target.closest('svg.line') : null, tip = $('ch-tip'), cx = $('ch-x');
@@ -496,7 +496,7 @@ function vOrder(C){
   const pills = '<div class="pills" role="group" aria-label="Saring menurut status">' + opts.map(o => '<button class="small' + (oFilter === o[0] ? ' on' : '') + '" data-act="ofilter" data-f="' + o[0] + '" aria-pressed="' + (oFilter === o[0]) + '">' + o[1] + ' <span class="cnt">' + n(o[0]) + '</span></button>').join('') + '</div>';
   return '<div class="row"><div class="row" style="justify-content:flex-start;gap:12px 18px"><h2>Semua order</h2>' + pills + '</div><span class="muted">' + list.length + ' order</span></div>' +
     (list.length ? '<div class="tablebox"><table>' + orderHead + orderRows(list) + '</table></div>' :
-      '<div class="tablebox"><div class="empty">' + (C.orders.length ? 'Tidak ada order dengan status ini.' : 'Belum ada order.<button class="primary" data-act="new-order">+ Order baru</button>') + '</div></div>');
+      '<div class="tablebox"><div class="empty">' + (C.orders.length ? 'Tidak ada order dengan status ini' : 'Belum ada order<button class="primary" data-act="new-order">+ Order baru</button>') + '</div></div>');
 }
 function vStok(C){
   const mut = S.stockin.map(s => ({ t: s.tanggal, p: s.productId, q: s.qty, k: s.catatan || 'Barang masuk', id: s.id, s: 0, c: Date.parse(s.created_at || s.tanggal) || 0 }))
@@ -509,10 +509,10 @@ function vStok(C){
     '<h2>Riwayat keluar masuk</h2>' +
     (mut.length ? '<div class="tablebox"><table><tr><th>Tanggal</th><th>Produk</th><th>Keterangan</th><th class="r">Jumlah</th><th></th></tr>' +
       mut.map(m => '<tr><td>' + tgl(m.t) + '</td><td>' + esc(name(m.p)) + '</td><td>' + esc(m.k) + '</td><td class="r num" style="color:var(' + (m.q < 0 ? '--raisin' : '--good') + ')">' + (m.q > 0 ? '+' : '−') + kg(Math.abs(m.q)) + '</td><td class="r">' + (m.id ? '<button class="small danger" data-act="del-stockin" data-id="' + m.id + '" data-confirm="Yakin?">Hapus</button>' : '') + '</td></tr>').join('') + '</table></div>'
-      : '<div class="tablebox"><div class="empty">Belum ada barang masuk.<button data-act="stock-in">+ Barang masuk</button></div></div>');
+      : '<div class="tablebox"><div class="empty">Belum ada barang masuk<button data-act="stock-in">+ Barang masuk</button></div></div>');
 }
 function vCustomer(C){
-  if (!S.customers.length) return '<h2>Customer</h2><div class="tablebox"><div class="empty">Customer otomatis tercatat saat order pertamanya dibuat.</div></div>';
+  if (!S.customers.length) return '<h2>Customer</h2><div class="tablebox"><div class="empty">Customer otomatis tercatat saat order pertamanya dibuat</div></div>';
   return '<h2>Customer</h2><div class="tablebox"><table><tr><th>Nama</th><th>Kontak</th><th class="r">Jumlah order</th><th class="r">Total belanja</th><th class="r">Sisa tagihan</th><th></th></tr>' +
     S.customers.slice().sort((a, b) => a.nama.localeCompare(b.nama)).map(c => { const x = C.perCust[c.id] || { order: 0, total: 0, sisa: 0 }; return '<tr><td>' + esc(c.nama) + '</td><td>' + esc(c.telp || '-') + '</td><td class="r num">' + x.order + '</td><td class="r num">' + rp(x.total) + '</td><td class="r num">' + rp(x.sisa) + '</td><td class="r"><button class="small" data-act="edit-customer" data-id="' + c.id + '">Ubah</button></td></tr>'; }).join('') + '</table></div>';
 }
@@ -555,7 +555,7 @@ function recalcForm(){
 async function saveOrder(){
   const items = readItems().filter(i => i.qty > 0), nama = $('o-cust').value.trim(), tanggal = $('o-tgl').value;
   const total = items.reduce((a, i) => a + lineTotal(i), 0), dp = Math.round(parseFloat($('o-dp').value) || 0);
-  if (!items.length) return void ($('o-err').textContent = 'Isi minimal satu barang dengan qty lebih dari 0.');
+  if (!items.length) return void ($('o-err').textContent = 'Isi minimal satu barang dengan qty lebih dari 0');
   if (dp > total) return void ($('o-err').textContent = 'DP lebih besar dari total order (' + rp(total) + ').');
   let c = S.customers.find(x => x.nama.toLowerCase() === nama.toLowerCase());
   const customerId = c ? c.id : await put('customers', { nama, telp: '' });
@@ -577,7 +577,7 @@ function orderDetail(o){
     '<div class="grid2"><label class="f">Status pembayaran' + statusSelect(o, 'd') + '</label><label class="f">Note' + noteInput(o, 'd') + '</label></div>' +
     '<div class="sum num"><span>Total</span><span style="text-align:right">' + rp(o.total) + '</span><span>Sudah dibayar</span><span style="text-align:right">' + rp(o.dibayar) + '</span><span class="t">Sisa tagihan</span><span class="t" style="text-align:right">' + rp(Math.max(o.sisa, 0)) + '</span></div>' +
     '<h3>Pembayaran</h3>' +
-    (pays.length ? '<div class="tablebox"><table>' + pays.map(p => '<tr><td>' + tgl(p.tanggal) + '</td><td>' + esc(jn(p.jenis)) + ' · ' + esc(p.metode || '') + '</td><td class="r num">' + rp(p.jumlah) + '</td><td class="r"><button class="small danger" data-act="del-pay" data-id="' + p.id + '" data-confirm="Yakin?">Hapus</button></td></tr>').join('') + '</table></div>' : '<span class="muted">Belum ada pembayaran.</span>') +
+    (pays.length ? '<div class="tablebox"><table>' + pays.map(p => '<tr><td>' + tgl(p.tanggal) + '</td><td>' + esc(jn(p.jenis)) + ' · ' + esc(p.metode || '') + '</td><td class="r num">' + rp(p.jumlah) + '</td><td class="r"><button class="small danger" data-act="del-pay" data-id="' + p.id + '" data-confirm="Yakin?">Hapus</button></td></tr>').join('') + '</table></div>' : '<span class="muted">Belum ada pembayaran</span>') +
     (o.sisa > 0 && o.status !== 'batal' ? '<form id="f-pay" data-id="' + o.id + '" class="grid2" style="align-items:end"><label class="f">Tanggal<input id="p-tgl" type="date" value="' + today() + '" required></label><label class="f">Jumlah<input class="num" id="p-jml" type="number" min="1" step="1" max="' + o.sisa + '" value="' + o.sisa + '" inputmode="numeric" required></label><label class="f">Cara bayar<select id="p-metode"><option>Transfer</option><option>Tunai</option></select></label><button class="primary">Catat pembayaran</button></form>' : '') +
     '<div class="actions"><button class="danger" data-act="del-order" data-id="' + o.id + '" data-confirm="Klik lagi: order dan pembayarannya dihapus">Hapus order</button>' +
     '<button data-act="close">Tutup</button><button class="primary" data-act="pdf" data-id="' + o.id + '">Download invoice PDF</button></div>';
@@ -623,7 +623,7 @@ async function savePdf(o){
   if (toko.bayar) { d.text('Pembayaran: ' + toko.bayar, 15, y); y += 6; }
   d.text('Status: ' + STATUS[o.status], 15, y); y += 6;
   if (o.catatan) d.text('Note: ' + o.catatan, 15, y);
-  d.save(o.no + '.pdf'); toast('Invoice ' + o.no + ' diunduh.');
+  d.save(o.no + '.pdf'); toast('Invoice ' + o.no + ' diunduh');
 }
 
 /* status & note: satu sumber (dokumen order), dipakai tabel dan halaman invoice */
@@ -643,14 +643,14 @@ async function setStatus(id, val){
     if (o.sisa > 0){ await put('payments', { orderId: id, tanggal: today(), jumlah: o.sisa, jenis: 'Pelunasan', metode: 'Transfer' }); toast('Lunas. Sisa ' + rp(o.sisa) + ' dicatat sebagai pembayaran hari ini.'); }
   } else if (val === 'dp'){
     if (o.dibayar <= 0){
-      toast('Isi nominal DP yang sudah diterima.'); render();
+      toast('Isi nominal DP yang sudah diterima'); render();
       const el = $('dlg').open ? $('p-jml') : document.querySelector('#view [data-paid="' + id + '"]');
       if (el){ el.focus(); if (el.select) el.select(); }
       return;
     }
     if (o.sisa <= 0){
       const auto = ps.filter(p => p.jenis === 'Pelunasan');
-      if (auto.length && auto.length < ps.length){ for (const p of auto) await del('payments', p.id); toast('Pelunasan dihapus, tersisa pembayaran DP.'); }
+      if (auto.length && auto.length < ps.length){ for (const p of auto) await del('payments', p.id); toast('Pelunasan dihapus, tersisa pembayaran DP'); }
       else toast('Pembayaran tercatat masih sama dengan total. Ubah nominalnya di kolom Sudah dibayar.');
     }
   } else if (val === 'belum' && ps.length) toast('Masih ada pembayaran tercatat. Isi 0 di kolom Sudah dibayar kalau memang belum bayar.');
@@ -671,7 +671,7 @@ async function setPaid(id, x){
       else { await put('payments', { jumlah: p.jumlah - c, jenis: 'DP' }, p.id); c = 0; }
     }
   }
-  toast('Sudah dibayar ' + rp(x) + ', kurang ' + rp(o.total - x) + '.'); render();
+  toast('Sudah dibayar ' + rp(x) + ', kurang ' + rp(o.total - x)); render();
 }
 async function setPayAmt(pid, x){
   const p = S.payments.find(v => v.id === pid); if (!p) return;
@@ -681,18 +681,18 @@ async function setPayAmt(pid, x){
   if (x > o.total - lain) x = o.total - lain;
   if (x <= 0) await del('payments', pid);
   else await put('payments', { jumlah: x, jenis: lain + x >= o.total ? 'Pelunasan' : 'DP' }, pid);
-  toast('Sudah dibayar ' + rp(lain + x) + ', kurang ' + rp(o.total - lain - x) + '.'); render();
+  toast('Sudah dibayar ' + rp(lain + x) + ', kurang ' + rp(o.total - lain - x)); render();
 }
 async function setNote(id, text){
   const raw = S.orders.find(x => x.id === id);
   if (!raw || (raw.catatan || '') === text) return;
   await put('orders', { catatan: text }, id);
-  toast('Note tersimpan.');
+  toast('Note tersimpan');
 }
 document.addEventListener('change', ev => {
   const t = ev.target;
   if (t.id === 'per-from' || t.id === 'per-to') setPeriode($('per-from').value, $('per-to').value);
-  else if (t.dataset && t.dataset.paydate) { if (t.value) put('payments', { tanggal: t.value }, t.dataset.paydate).then(() => toast('Tanggal bayar diperbarui.')).catch(fail); }
+  else if (t.dataset && t.dataset.paydate) { if (t.value) put('payments', { tanggal: t.value }, t.dataset.paydate).then(() => toast('Tanggal bayar diperbarui')).catch(fail); }
   else if (t.dataset && t.dataset.paid) setPaid(t.dataset.paid, parseFloat(t.value)).catch(fail);
   else if (t.dataset && t.dataset.payamt) setPayAmt(t.dataset.payamt, parseFloat(t.value)).catch(fail);
   else if (t.dataset && t.dataset.status) setStatus(t.dataset.status, t.value).catch(fail);
@@ -719,8 +719,8 @@ document.addEventListener('click', async ev => {
     else if (act === 'add-pay') {
       const o = findOrder(id), q = k => document.querySelector('#view [data-' + k + '="' + id + '"]');
       let amt = Math.round(parseFloat(q('newamt').value) || 0);
-      if (!o || amt <= 0) toast('Isi nominalnya dulu.');
-      else { if (amt > o.sisa) amt = o.sisa; await put('payments', { orderId: id, tanggal: q('newdate').value || today(), jumlah: amt, jenis: amt >= o.sisa ? 'Pelunasan' : 'DP', metode: 'Transfer' }); toast('Pembayaran ' + rp(amt) + ' tercatat.'); }
+      if (!o || amt <= 0) toast('Isi nominalnya dulu');
+      else { if (amt > o.sisa) amt = o.sisa; await put('payments', { orderId: id, tanggal: q('newdate').value || today(), jumlah: amt, jenis: amt >= o.sisa ? 'Pelunasan' : 'DP', metode: 'Transfer' }); toast('Pembayaran ' + rp(amt) + ' tercatat'); }
     }
     else if (act === 'per') {
       const n = new Date(), p = el.dataset.p;
@@ -743,7 +743,7 @@ document.addEventListener('click', async ev => {
     else if (act === 'del-pay') { const p = S.payments.find(x => x.id === id); await del('payments', id); if (p) await clearStatus(p.orderId); }
     else if (act === 'del-stockin') await del('stockin', id);
     else if (act === 'del-order') { const ps = S.payments.filter(p => p.orderId === id).map(p => p.id); closeDlg(); for (const p of ps) await del('payments', p); await del('orders', id); toast('Order dihapus. Stok dikembalikan.'); }
-    else if (act === 'wipe-contoh') { for (const c of COLS) for (const r of S[c].filter(x => x.contoh)) await del(c, r.id); toast('Data contoh dihapus.'); }
+    else if (act === 'wipe-contoh') { for (const c of COLS) for (const r of S[c].filter(x => x.contoh)) await del(c, r.id); toast('Data contoh dihapus'); }
   } catch (e) { fail(e); }
 });
 document.addEventListener('keydown', ev => {
@@ -764,12 +764,12 @@ document.addEventListener('submit', async ev => {
     if (f.id === 'f-login') {
       $('login-msg').textContent = '';
       const r = await sb.auth.signInWithPassword({ email: $('l-email').value.trim(), password: $('l-pass').value });
-      if (r.error) $('login-msg').textContent = 'Email atau password salah.'; else await enter();
+      if (r.error) $('login-msg').textContent = 'Email atau password salah'; else await enter();
     }
     else if (f.id === 'f-order') await saveOrder();
     else if (f.id === 'f-pay') {
       const o = calc(S, today()).orders.find(x => x.id === f.dataset.id), jumlah = Math.round(parseFloat($('p-jml').value) || 0);
-      if (o && jumlah > 0) { await put('payments', { orderId: o.id, tanggal: $('p-tgl').value, jumlah, jenis: jenisBayar(o.dibayar, o.sisa, jumlah), metode: $('p-metode').value }); await clearStatus(o.id); toast('Pembayaran ' + rp(jumlah) + ' tercatat.'); }
+      if (o && jumlah > 0) { await put('payments', { orderId: o.id, tanggal: $('p-tgl').value, jumlah, jenis: jenisBayar(o.dibayar, o.sisa, jumlah), metode: $('p-metode').value }); await clearStatus(o.id); toast('Pembayaran ' + rp(jumlah) + ' tercatat'); }
     }
     else if (f.id === 'f-product') {
       const old = S.products.find(p => p.id === f.dataset.id);
@@ -777,11 +777,11 @@ document.addEventListener('submit', async ev => {
       const pid = await put('products', data, old ? old.id : undefined);
       const awal = $('pr-awal') ? parseFloat($('pr-awal').value) || 0 : 0;
       if (awal > 0) await put('stockin', { productId: pid, tanggal: today(), qty: awal, catatan: 'Stok awal' });
-      closeDlg(); toast('Produk tersimpan.');
+      closeDlg(); toast('Produk tersimpan');
     }
-    else if (f.id === 'f-stock') { await put('stockin', { productId: $('s-prod').value, tanggal: $('s-tgl').value, qty: parseFloat($('s-qty').value) || 0, catatan: $('s-cat').value.trim() || 'Barang masuk' }); closeDlg(); toast('Stok bertambah.'); }
-    else if (f.id === 'f-customer') { const c = S.customers.find(x => x.id === f.dataset.id); await put('customers', Object.assign(strip(c), { nama: $('c-nama').value.trim(), telp: $('c-telp').value.trim() }), c.id); closeDlg(); toast('Customer tersimpan.'); }
-    else if (f.id === 'f-toko') { toko = { nama: $('t-nama').value.trim(), alamat: $('t-alamat').value.trim(), bayar: $('t-bayar').value.trim() }; const r = await sb.from('settings').upsert(Object.assign({ id: 'toko' }, toko)); if (r.error) throw r.error; closeDlg(); toast('Data toko tersimpan.'); }
+    else if (f.id === 'f-stock') { await put('stockin', { productId: $('s-prod').value, tanggal: $('s-tgl').value, qty: parseFloat($('s-qty').value) || 0, catatan: $('s-cat').value.trim() || 'Barang masuk' }); closeDlg(); toast('Stok bertambah'); }
+    else if (f.id === 'f-customer') { const c = S.customers.find(x => x.id === f.dataset.id); await put('customers', Object.assign(strip(c), { nama: $('c-nama').value.trim(), telp: $('c-telp').value.trim() }), c.id); closeDlg(); toast('Customer tersimpan'); }
+    else if (f.id === 'f-toko') { toko = { nama: $('t-nama').value.trim(), alamat: $('t-alamat').value.trim(), bayar: $('t-bayar').value.trim() }; const r = await sb.from('settings').upsert(Object.assign({ id: 'toko' }, toko)); if (r.error) throw r.error; closeDlg(); toast('Data toko tersimpan'); }
   } catch (e) { fail(e); }
   if (btn.isConnected) btn.disabled = false;
 });
@@ -790,7 +790,7 @@ document.addEventListener('submit', async ev => {
 async function enter(){
   $('login').hidden = true; $('app').hidden = false;
   try { await loadAll(); }
-  catch (e) { $('view').innerHTML = '<div class="tablebox"><div class="empty">Data tidak bisa dimuat: ' + esc(e.message || '') + '<br>Pastikan schema.sql sudah dijalankan di Supabase.</div></div>'; }
+  catch (e) { $('view').innerHTML = '<div class="tablebox"><div class="empty">Data tidak bisa dimuat: ' + esc(e.message || '') + '<br>Pastikan schema.sql sudah dijalankan di Supabase</div></div>'; }
 }
 startLang();
 (async function start(){
